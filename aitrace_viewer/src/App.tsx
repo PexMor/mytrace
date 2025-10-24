@@ -47,7 +47,7 @@ export default function App() {
 
     setLoading(true);
     try {
-      const response = await fetch(`/samples/${sample.filename}`);
+      const response = await fetch(`./samples/${sample.filename}`);
       const text = await response.text();
       const rows = text.trim().split('\n').map(l => JSON.parse(l));
       setForest(buildSpanForest(rows));
