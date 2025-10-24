@@ -30,7 +30,7 @@ export default function App() {
 
   useEffect(() => {
     // Load samples config on mount
-    fetch('/samples/config.json')
+    fetch('./samples/config.json')
       .then(res => res.json())
       .then((config: SamplesConfig) => {
         setSamples(config.samples);
