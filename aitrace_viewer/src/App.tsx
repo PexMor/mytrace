@@ -2,11 +2,20 @@ import { useState, useEffect } from 'preact/hooks';
 import { buildSpanForest } from './logic/buildSpanTree';
 import { TreeView } from './components/TreeView';
 import { TimestampSettingsPanel } from './components/TimestampSettings';
+import { DensitySettingsPanel } from './components/DensitySettings';
 import { 
   loadTimestampSettings, 
   saveTimestampSettings,
   type TimestampSettings 
 } from './utils/timestampFormat';
+import {
+  loadDensitySettings,
+  saveDensitySettings,
+  type DensitySettings
+} from './utils/densitySettings';
+import { computeSHA256 } from './utils/hash';
+import { useExpandCollapseStore } from './stores/expandCollapseStore';
+import { useCustomLensStore } from './stores/customLensStore';
 
 interface Sample {
   id: string;
@@ -27,8 +36,17 @@ export default function App() {
   const [selectedSample, setSelectedSample] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [timestampSettings, setTimestampSettings] = useState<TimestampSettings>(loadTimestampSettings());
+  const [densitySettings, setDensitySettings] = useState<DensitySettings>(loadDensitySettings());
+  const [currentFileName, setCurrentFileName] = useState<string>('');
+  
+  const { setDocumentHash, clearCurrentDocState, clearAllState, loadFromIndexedDB } = useExpandCollapseStore();
+  const { loadFromIndexedDB: loadCustomLenses } = useCustomLensStore();
 
   useEffect(() => {
+    // Load state from IndexedDB on mount
+    loadFromIndexedDB();
+    loadCustomLenses();
+    
     // Load samples config on mount
     fetch('./samples/config.json')
       .then(res => res.json())
@@ -50,6 +68,12 @@ export default function App() {
       const response = await fetch(`./samples/${sample.filename}`);
       const text = await response.text();
       const rows = text.trim().split('\n').map(l => JSON.parse(l));
+      
+      // Compute hash and set document hash for state persistence
+      const hash = await computeSHA256(text);
+      await setDocumentHash(hash);
+      setCurrentFileName(sample.filename);
+      
       setForest(buildSpanForest(rows));
     } catch (err) {
       console.error('Failed to load sample:', err);
@@ -68,9 +92,15 @@ export default function App() {
 
   function handleFile(file: File) {
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       const text = e.target?.result as string;
       const rows = text.trim().split('\n').map(l => JSON.parse(l));
+      
+      // Compute hash and set document hash for state persistence
+      const hash = await computeSHA256(text);
+      await setDocumentHash(hash);
+      setCurrentFileName(file.name);
+      
       setForest(buildSpanForest(rows));
     };
     reader.readAsText(file);
@@ -92,6 +122,11 @@ export default function App() {
   function handleTimestampSettingsChange(newSettings: TimestampSettings) {
     setTimestampSettings(newSettings);
     saveTimestampSettings(newSettings);
+  }
+
+  function handleDensitySettingsChange(newSettings: DensitySettings) {
+    setDensitySettings(newSettings);
+    saveDensitySettings(newSettings);
   }
 
   return (
@@ -139,13 +174,45 @@ export default function App() {
               style={{ width: '200px' }}
             />
           </div>
-          <div class='col-auto ms-auto'>
+          <div class='col-auto ms-auto d-flex gap-2'>
+            <button
+              onClick={clearCurrentDocState}
+              class='btn btn-outline-secondary btn-sm'
+              disabled={!forest}
+              title='Clear expand/collapse state for current document'
+            >
+              <i class='bi bi-arrow-clockwise me-1'></i>
+              Reset View
+            </button>
+            <button
+              onClick={() => {
+                if (confirm('Clear all saved expand/collapse states for all documents?')) {
+                  clearAllState();
+                }
+              }}
+              class='btn btn-outline-danger btn-sm'
+              title='Clear all saved expand/collapse states'
+            >
+              <i class='bi bi-trash me-1'></i>
+              Clear All States
+            </button>
+            <DensitySettingsPanel 
+              settings={densitySettings}
+              onSettingsChange={handleDensitySettingsChange}
+            />
             <TimestampSettingsPanel 
               settings={timestampSettings}
               onSettingsChange={handleTimestampSettingsChange}
             />
           </div>
         </div>
+        
+        {currentFileName && (
+          <div class='text-muted small mb-2'>
+            <i class='bi bi-file-text me-1'></i>
+            Current file: <strong>{currentFileName}</strong>
+          </div>
+        )}
 
         {selectedSample && samples.find(s => s.id === selectedSample) && (
           <div class='sample-info mb-2'>
@@ -167,7 +234,7 @@ export default function App() {
         </div>
       </div>
 
-      {forest && <TreeView forest={forest} timestampSettings={timestampSettings} />}
+      {forest && <TreeView forest={forest} timestampSettings={timestampSettings} densitySettings={densitySettings} />}
     </div>
   );
 }

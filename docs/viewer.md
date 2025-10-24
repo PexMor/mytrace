@@ -54,6 +54,11 @@ A modern, standalone web application for viewing trace logs. Built with Preact, 
 - 📋 **Context Menus** - Copy/download JSON data with right-click
 - 🌐 **No Server Required** - Completely client-side
 - 📱 **Responsive Design** - Works on desktop and mobile
+- 🎯 **Compact JSON Trees** - YAML-like inline display for simple data structures
+- 🔄 **Smart Expansion** - Automatic inline/expanded view based on data complexity
+- 💾 **State Persistence** - Expand/collapse state saved to IndexedDB per document
+- 🔑 **Hash-Based Storage** - SHA256 hash identifies documents, not filenames
+- 🗑️ **State Management** - Reset current view or clear all saved states
 
 ### Log Format
 
@@ -108,6 +113,63 @@ Click "Load sample logs" to see demo traces.
 - Right-click for context menu (copy/download JSON)
 - View full JSON data in expandable trees
 
+**Ultra-Compact View (Two-Level):**
+
+- **Level 1 - Spans**: Everything on one line when collapsed
+  - Example: `▸ llm_start [Model: ChatOpenAI] [Run ID: f3577...] info ⌄`
+  - Click to reveal log entries (also compact)
+- **Level 2 - Log Entries**: Also one line when collapsed
+  - Example: `▸ [Model: ChatOpenAI] [Run ID: f3577...] ⌄`
+  - Click to reveal JSON trees, raw button, full details
+- **Progressive Disclosure**: Expand only what you need at each level
+- **Space Savings**: 80-90% less vertical space for typical traces
+- Simple fields (Model, Run ID, etc.) shown as inline badges
+- Complex fields (JSON trees) hidden until explicitly expanded
+
+**Configurable Density:**
+
+- **Three modes** to control spacing: Compact (zero padding), Cozy (minimal), Comfortable (default)
+- **Top-right dropdown** - Click density button to adjust spacing
+- **Instant updates** - Changes apply to all nodes immediately
+- **Persistent** - Setting saved to browser localStorage
+
+#### State Persistence
+
+**Your expand/collapse state is automatically saved!**
+
+When you load a file, the viewer:
+
+1. Computes a SHA256 hash of the file content
+2. Uses this hash to identify the document uniquely
+3. Restores any previously saved expand/collapse state from IndexedDB
+4. Saves state changes automatically as you navigate
+
+**Benefits:**
+
+- ✅ Reload the page → Your view is preserved
+- ✅ Close and reopen the browser → Your view is preserved
+- ✅ Same file content → Same state (even with different filename)
+- ✅ Different file content → Different state (even with same filename)
+
+**State Management Controls:**
+
+- **Reset View** button (🔄): Collapses everything for current document
+- **Clear All States** button (🗑️): Wipes all saved states for all documents (requires confirmation)
+- **Current filename** display: Shows which file you're viewing
+
+**What's Saved:**
+
+- Span expand/collapse state
+- Log entry "raw" JSON visibility
+- JSON tree expand/collapse (every nested level)
+- Long string "more/less" expansion
+
+**Default Behavior:**
+
+- All JSON trees start fully collapsed for clean initial view
+- Expand only what you need to investigate
+- Your expansions are remembered for next time
+
 ### Architecture
 
 #### Data Model
@@ -136,11 +198,24 @@ type SpanNode = {
 
 #### Components
 
-- **App.tsx** - Main container with file upload and sample loading
+- **App.tsx** - Main container with file upload, sample loading, and hash computation
 - **TreeView.tsx** - Renders the forest of traces
-- **NodeRow.tsx** - Individual span node with fold/unfold capability
-- **JsonTree.tsx** - Expandable JSON tree with syntax highlighting
+- **NodeRow.tsx** - Individual span node with fold/unfold capability (uses state store)
+- **JsonTree.tsx** - Expandable JSON tree with syntax highlighting (uses state store)
 - **TimestampSettings.tsx** - Timestamp format configuration
+
+#### State Management
+
+- **stores/expandCollapseStore.ts** - Zustand store for expand/collapse state
+  - Document hash tracking
+  - Node expansion state (keyed by document hash)
+  - IndexedDB persistence
+  - State reset/clear operations
+- **utils/hash.ts** - SHA256 hash computation for document identification
+- **IndexedDB** - Browser persistent storage
+  - Database: `aitrace-viewer`
+  - Store: `expand-collapse-state`
+  - Survives page reloads and browser restarts
 
 ---
 
@@ -284,6 +359,70 @@ Show all non-standard fields:
   maxInitialDepth: 1
 }
 ```
+
+---
+
+## JSON Tree Display
+
+The advanced viewer includes an intelligent JSON tree component that adapts its display based on data complexity.
+
+### Smart Inline Display
+
+Simple arrays and objects are displayed inline when collapsed to save vertical space:
+
+**Simple Arrays (≤5 primitives, <60 chars):**
+
+```
+▸ tags: ["python", "debug", "error"]
+▸ ids: [1, 2, 3, 4, 5]
+```
+
+**Simple Objects (≤3 properties, <60 chars):**
+
+```
+▸ metadata: {status: "ok", code: 200, cached: true}
+▸ user: {id: 42, name: "John"}
+```
+
+**Complex Structures:**
+
+```
+▸ response: {15 props}
+▸ items: [42 items]
+```
+
+### Consistent Layout
+
+All values display with their keys inline:
+
+```
+▸ name: "John Doe"
+▸ age: 42
+▸ active: true
+▸ notes: null
+```
+
+### Tree Controls
+
+- **Toggle Icons**: Left-aligned chevrons (▸/▾) for consistent hierarchy
+- **Hover State**: Icons highlight on hover for better visibility
+- **Click Area**: Entire icon area is clickable (16px wide)
+
+### Context Menus
+
+Right-click on any array or object to:
+
+- Copy JSON to clipboard
+- Download as JSON file
+
+### Visual Features
+
+- **Color Coding**: Different colors for strings, numbers, booleans, null
+- **Type Indicators**: Visual distinction between arrays `[]` and objects `{}`
+- **Nested Indentation**: 18px left margin with visual border guide
+- **Long Strings**: Automatic truncation at 100 chars with "more/less" toggle
+
+---
 
 ### Smart Value Rendering
 

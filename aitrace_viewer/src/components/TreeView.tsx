@@ -1,5 +1,6 @@
 import { NodeRow } from './NodeRow';
 import { formatTimestamp, type TimestampSettings } from '../utils/timestampFormat';
+import type { DensitySettings } from '../utils/densitySettings';
 
 function formatDuration(ms: number): string {
   if (ms < 1000) return `${ms}ms`;
@@ -12,9 +13,10 @@ function formatDuration(ms: number): string {
 interface TreeViewProps {
   forest: Map<string, any>;
   timestampSettings: TimestampSettings;
+  densitySettings: DensitySettings;
 }
 
-export function TreeView({ forest, timestampSettings }: TreeViewProps) {
+export function TreeView({ forest, timestampSettings, densitySettings }: TreeViewProps) {
   const traces = Array.from(forest.values());
   return (
     <div class='traces-container'>
@@ -62,6 +64,7 @@ export function TreeView({ forest, timestampSettings }: TreeViewProps) {
                 node={node} 
                 trace={t} 
                 timestampSettings={timestampSettings}
+                densitySettings={densitySettings}
                 traceStartTime={t.startTime}
               />;
             })}

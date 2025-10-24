@@ -6,6 +6,76 @@ All notable changes to the AI Trace Viewer project are documented here.
 
 ### Added
 
+#### State Persistence with IndexedDB
+
+- **Document-Based State Storage** - Expand/collapse state persisted using SHA256 document hash
+  - SHA256 hash computed for each loaded file to uniquely identify it
+  - State stored in browser's IndexedDB (survives page reloads/browser restarts)
+  - Same file content = same state, regardless of filename changes
+- **Comprehensive State Tracking** - All UI states are persisted:
+  - Span nodes expand/collapse
+  - Log entry "raw" JSON visibility
+  - JSON tree expand/collapse at every nesting level
+  - Long string "more/less" expansion
+- **Default Collapsed State** - All JSON trees default to fully collapsed
+  - Clean initial view (maxInitialDepth = 0 by default)
+  - Users explicitly expand what they need
+  - Previously expanded nodes restored from IndexedDB
+- **State Management Controls**:
+  - "Reset View" button - Clear state for current document
+  - "Clear All States" button - Wipe all saved states (with confirmation)
+  - Current filename display
+- **Technology Stack**:
+  - Zustand for state management (lightweight, render-safe)
+  - IndexedDB for persistent storage
+  - Web Crypto API for SHA256 hashing
+
+#### Configurable Density/Spacing
+
+- **Three Density Modes** - User-configurable spacing for optimal viewing
+  - **Compact**: Zero padding - maximum information density
+  - **Cozy**: Minimal spacing - balanced view
+  - **Comfortable**: Default spacing - spacious layout
+- **Persistent Setting** - Saved to localStorage, applies across sessions
+- **Easy Access** - Dropdown control in top-right toolbar
+- **Live Updates** - Changes apply instantly to all nodes
+
+#### Ultra-Compact Node View
+
+- **Single-Line Default View at ALL Levels** - Both spans and log entries show all info on one line when collapsed
+  - **Span Level**: `▸ llm_start [Model: ChatOpenAI] [Run ID: f3577...] info ⌄`
+  - **Log Entry Level**: `▸ llm_start [Model: ChatOpenAI] [Run ID: f3577...] ⌄`
+  - Simple text fields shown as inline badges
+  - Complex fields (JSON trees) hidden until expanded
+  - No "raw" button shown until expanded
+- **Two-Level Expansion** - Click to expand progressively:
+  1. Click span → Reveals log entries (still compact one-line)
+  2. Click log entry → Reveals JSON trees, raw button, timestamps
+- **Visual Hints** - Small chevron icons indicate expandable content at each level
+- **Massive Space Savings** - 80-90% less vertical space for typical traces
+
+#### JSON Tree Viewer Improvements
+
+- **Smart Inline Display** - Arrays and objects display inline when simple enough
+  - Simple arrays (≤5 primitives, <60 chars) show as `["item1", "item2", ...]`
+  - Simple objects (≤3 props, <60 chars) show as `{key: value, ...}`
+  - Complex structures show summary: `{15 props}` or `[42 items]`
+- **Better Alignment** - Toggle icons now left-aligned in separate column
+  - Consistent 16px wide clickable area
+  - Proper alignment with tree hierarchy
+  - Better visual consistency with node expand/collapse controls
+- **Consistent Key Display** - All values show their keys inline
+  - Primitives: `name: "John Doe"`, `age: 42`, `active: true`
+  - Arrays/Objects: `tags: ["a", "b"]` or `metadata: {3 props}`
+- **Improved Spacing** - More compact vertical layout
+  - 18px left margin for nested items
+  - 8px padding with visual border guide
+  - 60% less vertical space for collapsed views
+- **YAML-like Compact View** - Mixing JSON and YAML display styles
+  - Simple data shown inline like YAML
+  - Complex data expands to structured tree
+  - Best of both worlds for readability
+
 #### Configuration System
 
 - **`aitrace/config.py`** - New configuration management module using `configargparse`
