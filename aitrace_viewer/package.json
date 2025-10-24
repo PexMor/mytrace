@@ -1,0 +1,22 @@
+{
+  "name": "opentrace-viewer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:gh": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "preact": "^10.19.3",
+    "zustand": "^4.5.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.0",
+    "@preact/preset-vite": "^2.5.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.0"
+  }
+}

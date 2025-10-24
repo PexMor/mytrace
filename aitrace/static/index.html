@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Trace Viewer</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 AI Trace Viewer</h1>
+            <p class="subtitle">Explore execution traces with collapsible span trees</p>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab active" data-tab="traces">Traces</button>
+            <button class="tab" data-tab="search">Search</button>
+        </nav>
+
+        <!-- Traces Tab -->
+        <div id="traces-tab" class="tab-content active">
+            <div class="search-box">
+                <input type="text" id="filter-traces" placeholder="Filter traces...">
+                <button id="refresh-traces">Refresh</button>
+            </div>
+
+            <div id="traces-list" class="traces-list">
+                <p class="loading">Loading traces...</p>
+            </div>
+        </div>
+
+        <!-- Search Tab -->
+        <div id="search-tab" class="tab-content">
+            <div class="search-form">
+                <div class="form-group">
+                    <label for="search-level">Level:</label>
+                    <select id="search-level">
+                        <option value="">All</option>
+                        <option value="DEBUG">DEBUG</option>
+                        <option value="INFO">INFO</option>
+                        <option value="WARNING">WARNING</option>
+                        <option value="ERROR">ERROR</option>
+                        <option value="CRITICAL">CRITICAL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="search-event">Event:</label>
+                    <input type="text" id="search-event" placeholder="Substring match...">
+                </div>
+                <div class="form-group">
+                    <label for="search-limit">Limit:</label>
+                    <input type="number" id="search-limit" value="100" min="1" max="1000">
+                </div>
+                <button id="search-btn">Search</button>
+            </div>
+
+            <div id="search-results" class="search-results">
+                <p class="info">Enter search criteria and click Search</p>
+            </div>
+        </div>
+
+        <!-- Trace Detail Modal -->
+        <div id="trace-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modal-title">Trace Details</h2>
+                    <button class="close-btn" id="close-modal">&times;</button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                    <p class="loading">Loading trace...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
+

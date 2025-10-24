@@ -1,0 +1,31 @@
+[project]
+name = "ai-trace"
+version = "0.2.0"
+description = "AI Trace Viewer - View structured logs as execution trees"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "configargparse>=1.7",
+    "fastapi>=0.119.0",
+    "opentelemetry-sdk>=1.38.0",
+    "pyyaml>=6.0.2",
+    "requests>=2.32.5",
+    "structlog>=25.4.0",
+    "tomli>=2.2.1; python_version<'3.11'",
+    "uvicorn>=0.38.0",
+]
+
+[project.scripts]
+aitrace = "aitrace.server:main"
+
+[project.optional-dependencies]
+examples = [
+    "langgraph>=0.2.0",
+    "langchain>=0.3.0",
+    "langchain-anthropic>=0.2.0",
+    "langchain-openai>=1.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[tool.uv]
+package = true

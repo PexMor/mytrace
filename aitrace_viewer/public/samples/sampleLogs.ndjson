@@ -1,0 +1,4 @@
+{"event":"start_trace","timestamp":"2025-10-23T12:00:00Z","trace_id":"abc","span_id":"1","level":"info"}
+{"event":"call_service_a","timestamp":"2025-10-23T12:00:01Z","trace_id":"abc","span_id":"2","parent_span_id":"1","level":"info"}
+{"event":"query_db","timestamp":"2025-10-23T12:00:02Z","trace_id":"abc","span_id":"3","parent_span_id":"2","level":"debug"}
+{"event":"call_service_b","timestamp":"2025-10-23T12:00:03Z","trace_id":"abc","span_id":"4","parent_span_id":"1","level":"warn"}
