@@ -1,9 +1,8 @@
 ---
-layout: home
-title: Home
+layout: single
+title: "AI Trace Viewer Documentation"
+permalink: /
 ---
-
-# AI Trace Viewer Documentation
 
 Welcome to the AI Trace Viewer documentation. This directory contains comprehensive guides for using and developing the trace viewer.
 

@@ -1,4 +1,16 @@
 source "https://rubygems.org"
+
 gem "jekyll"
-gem "minima"          # Clean, modern default theme with no deprecation warnings
+gem "minimal-mistakes-jekyll"
+
+# Required plugin for minimal-mistakes
+gem "jekyll-include-cache"
+
+# Recommended plugins
+gem "jekyll-feed"
+gem "jekyll-paginate"
+gem "jekyll-sitemap"
+gem "jekyll-gist"
+
+# Utilities
 gem "logger"          # Silence Ruby 3.5 warning

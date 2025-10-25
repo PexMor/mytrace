@@ -1,0 +1,36 @@
+# Main navigation links
+main:
+  - title: "Quick Start"
+    url: /quickstart.html
+  - title: "Configuration"
+    url: /configuration.html
+  - title: "Development"
+    url: /development.html
+  - title: "Deployment"
+    url: /deployment.html
+  - title: "Viewer"
+    url: /viewer.html
+  - title: "GitHub"
+    url: https://github.com/PexMor/mytrace
+
+# Sidebar navigation for documentation
+docs:
+  - title: "Getting Started"
+    children:
+      - title: "Quick Start"
+        url: /quickstart.html
+      - title: "Configuration"
+        url: /configuration.html
+  - title: "Advanced"
+    children:
+      - title: "Development"
+        url: /development.html
+      - title: "Deployment"
+        url: /deployment.html
+  - title: "Tools"
+    children:
+      - title: "Trace Viewer"
+        url: /viewer.html
+      - title: "Web Viewer App"
+        url: /app/
+
