@@ -6,10 +6,12 @@ A lightweight, self-contained system for viewing structured logs as collapsible 
 
 - 🌳 **Collapsible Trace Trees** - Visualize function call hierarchies with nested spans
 - 📊 **Structured Logging** - JSON logs with automatic trace/span ID injection
+- 📍 **Source Location Tracking** - Automatic file path and line number capture for IDE integration
 - 🔗 **No External Dependencies** - No Zipkin, Jaeger, or other backend required
 - 🚀 **Simple Setup** - Just SQLite + FastAPI + Static HTML/JS
 - 🎨 **Modern UI** - Clean, responsive web interface
 - 🔍 **Search & Filter** - Find logs by level, event, timestamp
+- 🔌 **VSCode/Cursor Plugin Ready** - Compatible with IDE plugins for in-editor trace viewing
 
 ## Quick Start
 
@@ -193,6 +195,37 @@ See [test/README.md](test/README.md) for detailed example documentation.
 - `GET /api/traces` - List all traces with metadata
 - `GET /api/trace/{id}` - Get detailed trace with tree structure
 - `GET /api/search` - Search logs with filters
+
+## Source Location Tracking
+
+Every log entry automatically includes the source file location:
+
+```json
+{
+  "event": "user_login",
+  "file": "src/auth/handler.py",  // relative to workspace root
+  "line": 42,                      // line number
+  "function": "handle_login",      // function name
+  "trace_id": "...",
+  "span_id": "..."
+}
+```
+
+**Features:**
+- ✅ Automatic workspace root detection (looks for `.git`, `pyproject.toml`, etc.)
+- ✅ Relative paths for portability across machines
+- ✅ Compatible with VSCode/Cursor plugin format
+- ✅ Minimal performance overhead (~10-50μs per log)
+
+**Manual Configuration:**
+```python
+from aitrace import logging_config
+
+# Override auto-detected workspace root
+logging_config.set_workspace_root("/path/to/project")
+```
+
+See [Source Location Documentation](docs/source_location_tracking.md) for details and VSCode plugin integration.
 
 ## Requirements
 

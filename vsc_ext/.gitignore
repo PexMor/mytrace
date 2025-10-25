@@ -1,0 +1,23 @@
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build output
+out/
+dist/
+
+# VSCode extension
+*.vsix
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode-test/
+.vscode/settings.json
+
+# TypeScript
+*.tsbuildinfo
+

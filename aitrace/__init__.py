@@ -3,7 +3,7 @@
 __version__ = "0.2.0"
 
 from .tracing import setup_tracing
-from .logging_config import setup_logging
+from .logging_config import setup_logging, set_workspace_root, get_workspace_root
 from .decorators import auto_span
 from .buffer import BufferedLogger
 from .config import (
@@ -16,6 +16,8 @@ from .config import (
 __all__ = [
     "setup_tracing",
     "setup_logging",
+    "set_workspace_root",
+    "get_workspace_root",
     "auto_span",
     "BufferedLogger",
     "get_config_dir",

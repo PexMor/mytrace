@@ -10,7 +10,7 @@ from pathlib import Path
 from datetime import datetime
 from uuid import UUID
 
-from .logging_config import _otel_ids_processor
+from .logging_config import _otel_ids_processor, _source_location_processor
 from .config import path_to_display
 
 
@@ -294,6 +294,7 @@ class BufferedLogger:
         processors = [
             structlog.contextvars.merge_contextvars,
             structlog.processors.TimeStamper(fmt="iso"),
+            _source_location_processor,  # Add source file and line info
             _otel_ids_processor,
             structlog.processors.dict_tracebacks,
             self._buffering_processor,

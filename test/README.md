@@ -2,18 +2,37 @@
 
 This directory contains example scripts demonstrating how to use AI Trace Viewer with various frameworks.
 
+## ✨ Source Location Tracking
+
+**All tests automatically capture source location (file path and line number) for every log entry!**
+
+Every log entry includes:
+- `file` - Relative path from workspace root (e.g., `test/01_initial.py`)
+- `line` - Line number where log was called (e.g., `160`)
+- `function` - Function name (e.g., `generate_traces`)
+
+This enables:
+- **VSCode/Cursor plugin integration** - Click on code to see traces
+- **Portable traces** - Share logs between machines/users
+- **Easy debugging** - Jump directly to the code that generated each log
+
+See [SOURCE_LOCATION_VERIFICATION.md](SOURCE_LOCATION_VERIFICATION.md) for verification results.
+
 ## Structure
 
 ```
 test/
-├── __init__.py          # Package initialization
-├── common.py            # Shared utilities for all examples
-├── 01_initial.py        # Original comprehensive example
-├── 02_simple.py         # Simple LangGraph chatbot
-├── 03_router.py         # Router pattern with multiple agents
-├── 04_buffered_simple.py # BufferedLogger patterns
-├── 05_target_modes.py   # Different logging targets
-└── README.md            # This file
+├── __init__.py                          # Package initialization
+├── common.py                            # Shared utilities for all examples
+├── 01_initial.py                        # Original comprehensive example
+├── 02_simple.py                         # Simple LangGraph chatbot
+├── 03_router.py                         # Router pattern with multiple agents
+├── 04_buffered_simple.py                # BufferedLogger patterns
+├── 05_target_modes.py                   # Different logging targets
+├── test_source_location.py              # Source location feature test
+├── test_buffered_source_location.py     # BufferedLogger with source location
+├── SOURCE_LOCATION_VERIFICATION.md      # Verification results
+└── README.md                            # This file
 ```
 
 ### common.py - Shared Utilities

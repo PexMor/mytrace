@@ -1,0 +1,26 @@
+# Source files
+src/
+tsconfig.json
+.eslintrc.json
+
+# Build files
+.vscode/
+.vscode-test/
+node_modules/
+*.vsix
+
+# Git
+.git
+.gitignore
+
+# Development
+launch.json
+tasks.json
+*.map
+
+# Documentation (included separately)
+# README.md and CHANGELOG.md are included by default
+
+# Tests
+test/
+

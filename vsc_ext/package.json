@@ -1,0 +1,99 @@
+{
+  "name": "trace-viewer",
+  "displayName": "Trace Viewer",
+  "description": "View aitrace Python log traces directly in your source code with interactive markers and detailed panels",
+  "version": "0.1.0",
+  "publisher": "aitrace",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/mytrace"
+  },
+  "engines": {
+    "vscode": "^1.92.0"
+  },
+  "categories": [
+    "Debuggers",
+    "Visualization",
+    "Other"
+  ],
+  "keywords": [
+    "trace",
+    "logging",
+    "python",
+    "debugging",
+    "observability"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "traceMarkers.loadTrace",
+        "title": "Trace: Load trace file (NDJSON/JSON)",
+        "category": "Trace Viewer"
+      },
+      {
+        "command": "traceMarkers.toggleDecorations",
+        "title": "Trace: Toggle Decorations",
+        "category": "Trace Viewer"
+      },
+      {
+        "command": "traceMarkers.openDetails",
+        "title": "Trace: Open Details",
+        "category": "Trace Viewer"
+      },
+      {
+        "command": "traceMarkers.setTraceFile",
+        "title": "Trace: Set Trace File (watch)",
+        "category": "Trace Viewer"
+      },
+      {
+        "command": "traceMarkers.clearTraces",
+        "title": "Trace: Clear All Traces",
+        "category": "Trace Viewer"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Trace Viewer",
+      "properties": {
+        "traceMarkers.traceFile": {
+          "type": "string",
+          "default": "",
+          "description": "Absolute path to a NDJSON trace file to watch (each line is a JSON event). Leave empty to load manually."
+        },
+        "traceMarkers.autoReload": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically reload trace file when it changes"
+        },
+        "traceMarkers.maxTraces": {
+          "type": "number",
+          "default": 10000,
+          "minimum": 100,
+          "maximum": 100000,
+          "description": "Maximum number of traces to load (for performance)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.92.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vscode/vsce": "^2.22.0",
+    "eslint": "^8.0.0",
+    "typescript": "^5.4.0"
+  }
+}
+
