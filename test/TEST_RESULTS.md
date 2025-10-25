@@ -46,7 +46,7 @@ uv run test/04_buffered_simple.py
 ```
 
 **Result:** ✅ PASS
-- Logs written to: `/Users/petr.moravek/tmp/my-logs/20251024_103014.jsonl`
+- Logs written to: `~/tmp/my-logs/20251024_103014.jsonl`
 - Timestamp placeholder correctly expanded
 - Directory created automatically
 
@@ -59,16 +59,16 @@ uv run test/04_buffered_simple.py
 
 **Result:** ✅ PASS
 - Connection error caught gracefully
-- HTML fallback created at: `/Users/petr.moravek/tmp/temp-trace/20251024_103014.html`
+- HTML fallback created at: `~/tmp/temp-trace/20251024_103014.html`
 - User-friendly error message displayed:
   ```
   ⚠️  Cannot connect to trace server at http://localhost:8000/api/ingest
       Error: [Connection refused]
   
   ✓  Trace saved to local file instead:
-      /Users/petr.moravek/tmp/temp-trace/20251024_103014.html
+      ~/tmp/temp-trace/20251024_103014.html
   
-      Open in browser: file:///Users/petr.moravek/tmp/temp-trace/20251024_103014.html
+      Open in browser: file://~/tmp/temp-trace/20251024_103014.html
   ```
 
 ### Test 3: LOG_TRG with common.py
@@ -80,7 +80,7 @@ python -c "from test.common import setup_tracing_and_logging; t, b = setup_traci
 
 **Result:** ✅ PASS
 - Target type: file
-- Target value: `/Users/petr.moravek/tmp/my-logs/20251024_103034.jsonl`
+- Target value: `~/tmp/my-logs/20251024_103034.jsonl`
 
 ## Usage Examples
 

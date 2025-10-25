@@ -1,0 +1,4 @@
+source "https://rubygems.org"
+gem "jekyll"
+gem "minima"          # Clean, modern default theme with no deprecation warnings
+gem "logger"          # Silence Ruby 3.5 warning

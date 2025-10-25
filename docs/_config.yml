@@ -1,0 +1,28 @@
+title: AI Trace Viewer Documentation
+description: View structured logs as execution trees
+
+# Use GitHub Pages' default theme (Primer) - clean, modern, no deprecation warnings
+theme: minima
+
+# Suppress Sass deprecation warnings (from theme, not our code)
+sass:
+  quiet_deps: true
+  style: compressed
+  silence_deprecations:
+    - import
+    - color-functions
+    - global-builtin
+    - slash-div
+
+# Exclude files/directories from Jekyll processing
+exclude:
+  - vendor/
+  - .bundle/
+  - Gemfile
+  - Gemfile.lock
+  - app/            # Pre-built Vite viewer app
+  - archive/        # Archived documentation
+  - "*.sh"          # Shell scripts
+  - install_web.sh
+  - run_web.sh
+  - _site/          # Jekyll output

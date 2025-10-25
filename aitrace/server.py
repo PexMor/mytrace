@@ -8,7 +8,7 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-from .config import get_config_dir
+from .config import get_config_dir, path_to_display
 
 # Global database path (set by main() or init_app())
 DB_PATH = None
@@ -71,7 +71,7 @@ def init_app(db_path: str):
     # Initialize database
     db = get_db()
     init_db(db)
-    print(f"Database initialized at: {db_path}")
+    print(f"Database initialized at: {path_to_display(db_path)}")
 
 
 # Global database connection (initialized by init_app)
@@ -322,7 +322,7 @@ async def search_logs(
 def main():
     """Entry point for running the server."""
     import uvicorn
-    from .config import load_config, init_config_files
+    from .config import load_config, init_config_files, path_to_display
     
     # Initialize config files if needed
     init_config_files()
@@ -337,8 +337,8 @@ def main():
     print(f"AI Trace Viewer")
     print(f"{'='*60}")
     print(f"Server: http://{config.host}:{config.port}")
-    print(f"Database: {config.db_path}")
-    print(f"Config dir: {get_config_dir()}")
+    print(f"Database: {path_to_display(config.db_path)}")
+    print(f"Config dir: {path_to_display(get_config_dir())}")
     print(f"{'='*60}\n")
     
     # Run the server

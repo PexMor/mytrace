@@ -1,3 +1,8 @@
+---
+layout: page
+title: Development Documentation
+---
+
 # Development Documentation
 
 This document contains internal implementation details, refactoring notes, and development history for contributors and maintainers.

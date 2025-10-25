@@ -1,3 +1,8 @@
+---
+layout: page
+title: Configuration Guide
+---
+
 # AI Trace Viewer - Configuration Guide
 
 ## Overview

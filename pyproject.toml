@@ -27,5 +27,9 @@ examples = [
     "python-dotenv>=1.0.0",
 ]
 
+[tool.setuptools.packages.find]
+include = ["aitrace*"]
+exclude = ["aitrace_viewer*"]
+
 [tool.uv]
 package = true

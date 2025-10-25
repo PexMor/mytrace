@@ -165,9 +165,9 @@ When server is unreachable:
     Error: [Errno 61] Connection refused
 
 ✓  Trace saved to local file instead:
-    /Users/petr.moravek/tmp/temp-trace/20251024_103014.html
+    ~/tmp/temp-trace/20251024_103014.html
 
-    Open in browser: file:///Users/petr.moravek/tmp/temp-trace/20251024_103014.html
+    Open in browser: file://~/tmp/temp-trace/20251024_103014.html
 ```
 
 ## Benefits

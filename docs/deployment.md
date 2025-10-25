@@ -1,3 +1,8 @@
+---
+layout: page
+title: Deployment Guide
+---
+
 # Deployment Guide for AI Trace Viewer
 
 ## Quick Build & Deploy

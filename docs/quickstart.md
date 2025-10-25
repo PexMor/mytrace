@@ -1,3 +1,8 @@
+---
+layout: page
+title: Quick Start Guide
+---
+
 # 🚀 Quick Start Guide
 
 ## Getting Started in 3 Steps

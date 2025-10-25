@@ -40,5 +40,10 @@ node_modules/
 .DS_Store
 Thumbs.db
 
+# Ruby / Jekyll (for docs/)
+.bundle/
+.ruby-version
+.ruby-gemset
+
 # Exclude .env file
 .env

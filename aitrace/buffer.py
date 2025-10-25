@@ -11,6 +11,7 @@ from datetime import datetime
 from uuid import UUID
 
 from .logging_config import _otel_ids_processor
+from .config import path_to_display
 
 
 # HTML template for trace export
@@ -272,13 +273,12 @@ class BufferedLogger:
             return ("http", target)
         
         # File target - expand ~ and create timestamp
-        expanded = os.path.expanduser(target)
-        
         # Replace timestamp placeholders if present
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        expanded = expanded.replace("<YYYYMMDD_HHMMSS>", timestamp)
+        expanded = target.replace("<YYYYMMDD_HHMMSS>", timestamp)
         
-        file_path = Path(expanded)
+        # Expand ~ to user's home directory and resolve to absolute path
+        file_path = Path(expanded).expanduser().resolve()
         
         # Create parent directories if they don't exist
         file_path.parent.mkdir(parents=True, exist_ok=True)
@@ -389,8 +389,8 @@ class BufferedLogger:
             print(f"\n⚠️  Cannot connect to trace server at {self.target_value}", file=sys.stderr)
             print(f"    Error: {str(e)}", file=sys.stderr)
             print(f"\n✓  Trace saved to local file instead:", file=sys.stderr)
-            print(f"    {fallback_path}", file=sys.stderr)
-            print(f"\n    Open in browser: file://{fallback_path}\n", file=sys.stderr)
+            print(f"    {path_to_display(fallback_path)}", file=sys.stderr)
+            print(f"\n    Open in browser: file://{fallback_path.resolve()}\n", file=sys.stderr)
             
             return {
                 "ingested": len(self.buffer),

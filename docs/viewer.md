@@ -1,3 +1,8 @@
+---
+layout: page
+title: Web Viewer
+---
+
 # AI Trace Viewer - Web Interface
 
 The AI Trace Viewer provides two web interfaces for visualizing trace data:

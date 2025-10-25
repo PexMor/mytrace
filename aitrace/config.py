@@ -1,9 +1,40 @@
 """Configuration management for AI Trace Viewer."""
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 import configargparse
+
+
+def path_to_display(path: Union[Path, str]) -> str:
+    """Convert an absolute path to use ~ notation for display.
+    
+    Args:
+        path: Path object or string path
+        
+    Returns:
+        Path string with ~ for user's home directory
+    """
+    path = Path(path)
+    try:
+        # Try to make it relative to home
+        rel = path.relative_to(Path.home())
+        return f"~/{rel}"
+    except ValueError:
+        # Not relative to home, return as-is
+        return str(path)
+
+
+def expand_path(path: Union[Path, str]) -> Path:
+    """Expand ~ and convert to absolute Path.
+    
+    Args:
+        path: Path with potential ~ notation
+        
+    Returns:
+        Expanded absolute Path object
+    """
+    return Path(path).expanduser().resolve()
 
 
 def get_config_dir() -> Path:
@@ -120,9 +151,12 @@ def load_config(args: Optional[list] = None):
     parser = create_parser()
     config = parser.parse_args(args)
     
-    # Set default db_path if not specified
+    # Set default db_path if not specified, then expand it
     if config.db_path is None:
         config.db_path = str(get_data_dir() / "logs.db")
+    else:
+        # Expand ~ and resolve to absolute path
+        config.db_path = str(expand_path(config.db_path))
     
     return config
 
@@ -188,11 +222,11 @@ def init_config_files():
     
     if not yaml_config.exists():
         yaml_config.write_text(generate_default_config_yaml())
-        print(f"Created example config: {yaml_config}")
+        print(f"Created example config: {path_to_display(yaml_config)}")
     
     if not toml_config.exists():
         toml_config.write_text(generate_default_config_toml())
-        print(f"Created example config: {toml_config}")
+        print(f"Created example config: {path_to_display(toml_config)}")
     
     # Check if user has an active config
     active_configs = [
@@ -202,7 +236,7 @@ def init_config_files():
     
     if not any(c.exists() for c in active_configs):
         print(f"\nNo active config found. To create one, run:")
-        print(f"  cp {yaml_config} {config_dir / 'config.yaml'}")
+        print(f"  cp {path_to_display(yaml_config)} {path_to_display(config_dir / 'config.yaml')}")
         print(f"  # or")
-        print(f"  cp {toml_config} {config_dir / 'config.toml'}")
+        print(f"  cp {path_to_display(toml_config)} {path_to_display(config_dir / 'config.toml')}")
 

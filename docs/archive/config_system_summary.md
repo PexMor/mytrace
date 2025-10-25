@@ -211,15 +211,15 @@ $ uv sync
 
 ```bash
 $ uv run python -c "from aitrace import get_config_dir, load_config; print(get_config_dir())"
-/Users/petr.moravek/.config/aitrace
+~/.config/aitrace
 ```
 
 ### ✅ Help Message
 
 ```bash
 $ uv run python -m aitrace --help
-Created example config: /Users/petr.moravek/.config/aitrace/config.yaml.example
-Created example config: /Users/petr.moravek/.config/aitrace/config.toml.example
+Created example config: ~/.config/aitrace/config.yaml.example
+Created example config: ~/.config/aitrace/config.toml.example
 
 usage: __main__.py [-h] [-c CONFIG] [--host HOST] [--port PORT] ...
 # ... full help message displayed ...

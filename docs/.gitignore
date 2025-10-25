@@ -1,0 +1,15 @@
+# Ruby / Bundler
+vendor/bundle/
+.bundle/
+Gemfile.lock
+
+# Jekyll
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+
+# Ruby version managers
+.ruby-version
+.ruby-gemset
+
