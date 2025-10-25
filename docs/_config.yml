@@ -20,7 +20,6 @@ exclude:
   - .bundle/
   - Gemfile
   - Gemfile.lock
-  - app/            # Pre-built Vite viewer app
   - archive/        # Archived documentation
   - "*.sh"          # Shell scripts
   - install_web.sh
