@@ -2,11 +2,16 @@
 import functools
 from typing import Optional
 from opentelemetry import trace
+import structlog
 
 
 def auto_span(name: Optional[str] = None, **span_kwargs):
     """
     Decorator that creates a child span around the function call.
+    
+    Emits two lifecycle events:
+    - {function_name}.start: Provisional event when span begins
+    - {function_name}.end: Final event when span completes
     
     Args:
         name: Optional custom span name. If not provided, uses function's qualified name.
@@ -28,11 +33,28 @@ def auto_span(name: Optional[str] = None, **span_kwargs):
 
         @functools.wraps(fn)
         def wrapper(*args, **kwargs):
+            log = structlog.get_logger()
+            
             with tracer.start_as_current_span(span_name, **span_kwargs) as span:
                 # Add function metadata
                 span.set_attribute("code.function", fn.__name__)
                 span.set_attribute("code.namespace", fn.__module__)
-                return fn(*args, **kwargs)
+                
+                # Emit span start event (provisional)
+                log.info(f"{span_name}.start", provisional=True)
+                
+                try:
+                    # Execute function
+                    result = fn(*args, **kwargs)
+                    
+                    # Emit span end event (final)
+                    log.info(f"{span_name}.end")
+                    
+                    return result
+                except Exception as e:
+                    # Emit span end event even on error
+                    log.error(f"{span_name}.end", error=str(e), exc_info=True)
+                    raise
         
         return wrapper
     

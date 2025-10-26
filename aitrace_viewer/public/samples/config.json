@@ -1,25 +1,32 @@
 {
   "samples": [
     {
-      "id": "basic",
-      "name": "Basic Demo",
-      "description": "Simple trace with 4 spans showing service calls",
-      "filename": "sampleLogs.ndjson",
-      "icon": "bi-file-earmark-code"
+      "id": "ecommerce",
+      "name": "E-Commerce Checkout",
+      "description": "Complex e-commerce flow with nested spans, error handling, and background jobs",
+      "filename": "01_initial.jsonl",
+      "icon": "bi-cart-check"
     },
     {
       "id": "chatbot",
       "name": "LangGraph Chatbot",
-      "description": "Real trace from a chatbot with LLM invocation",
-      "filename": "20251024_120631.jsonl",
+      "description": "Simple chatbot with LLM invocation and callback handlers",
+      "filename": "02_simple.jsonl",
       "icon": "bi-chat-dots"
     },
     {
-      "id": "rendering-demo",
-      "name": "Rendering Demo",
-      "description": "Demonstrates smart chip rendering for simple values vs expandable trees for complex data",
-      "filename": "rendering-demo.jsonl",
-      "icon": "bi-palette"
+      "id": "router",
+      "name": "Multi-Agent Router",
+      "description": "Router pattern with message classification and multiple specialized agents (therapist vs logical)",
+      "filename": "03_router.jsonl",
+      "icon": "bi-signpost-split"
+    },
+    {
+      "id": "buffered",
+      "name": "BufferedLogger Demo",
+      "description": "Demonstrates BufferedLogger patterns and automatic trace context management",
+      "filename": "04_buffered_simple.json",
+      "icon": "bi-file-earmark-code"
     }
   ]
 }

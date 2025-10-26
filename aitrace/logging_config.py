@@ -1,5 +1,4 @@
 """structlog configuration that injects OpenTelemetry trace IDs and source location."""
-import os
 import inspect
 import structlog
 from pathlib import Path
@@ -134,6 +133,72 @@ def _otel_ids_processor(_, __, event_dict):
     return event_dict
 
 
+def _wrap_tracer_metadata_processor(_, __, event_dict):
+    """Wrap tracer metadata into __tracer_meta__ namespace.
+    
+    This processor moves all tracer infrastructure fields into a dedicated
+    __tracer_meta__ namespace, leaving user data at the top level.
+    
+    Metadata fields that get wrapped:
+    - timestamp
+    - event
+    - trace_id
+    - span_id
+    - parent_span_id
+    - file
+    - line
+    - function
+    - level
+    - provisional (if present)
+    
+    In compatibility mode (AITRACE_COMPAT_MODE=true), timestamp is duplicated
+    at the top level for external tools like Elastic/OpenTelemetry.
+    """
+    # Import config here to avoid circular import
+    from .config import get_config
+    
+    # Define metadata fields to wrap
+    metadata_fields = [
+        "timestamp",
+        "event",
+        "trace_id",
+        "span_id",
+        "parent_span_id",
+        "file",
+        "line",
+        "function",
+        "level",
+        "logger",
+        "provisional",
+    ]
+    
+    # Create __tracer_meta__ dict with all metadata
+    tracer_meta = {}
+    for field in metadata_fields:
+        if field in event_dict:
+            tracer_meta[field] = event_dict[field]
+    
+    # Only wrap if we have metadata
+    if tracer_meta:
+        # Remove metadata from top-level
+        for field in metadata_fields:
+            event_dict.pop(field, None)
+        
+        # Add __tracer_meta__ with all metadata
+        event_dict["__tracer_meta__"] = tracer_meta
+        
+        # In compatibility mode, duplicate timestamp at top-level
+        try:
+            config = get_config()
+            if getattr(config, "compat_mode", False) and "timestamp" in tracer_meta:
+                event_dict["timestamp"] = tracer_meta["timestamp"]
+        except Exception:
+            # If config loading fails, default to no compat mode
+            pass
+    
+    return event_dict
+
+
 def setup_logging():
     """Configure structlog with OpenTelemetry ID injection, source location, and JSON output."""
     structlog.configure(
@@ -141,8 +206,9 @@ def setup_logging():
             structlog.contextvars.merge_contextvars,
             structlog.processors.TimeStamper(fmt="iso"),
             _source_location_processor,  # Add source file and line info
-            _otel_ids_processor,
+            _otel_ids_processor,  # Add trace/span IDs
             structlog.processors.dict_tracebacks,
+            _wrap_tracer_metadata_processor,  # Wrap metadata into __tracer_meta__
             structlog.processors.JSONRenderer(),
         ],
         cache_logger_on_first_use=True,

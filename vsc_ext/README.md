@@ -10,15 +10,11 @@ View [aitrace](../README.md) Python log traces directly in your source code with
 - 🔄 **Live file watching** for real-time trace updates
 - 🎯 **Automatic path resolution** from workspace root
 
-## Quick Start
+## Quick Start (For Users)
 
-### 1. Install
+### 1. Install Extension
 
-```bash
-cd vsc_ext
-npm install
-npm run build
-```
+Install the extension from VSIX or marketplace (see [User Guide](docs/user-guide.md) for details).
 
 ### 2. Generate Traces
 
@@ -34,17 +30,21 @@ with tracer.start_as_current_span("main"):
 buffered.flush()
 ```
 
-### 3. Load in VSCode
+### 3. Load in VSCode/Cursor
 
 - Command Palette → `Trace: Load trace file`
 - Or configure: `traceMarkers.traceFile` setting
 
 See gutter icons appear on traced lines! Click CodeLens markers to view details.
 
+---
+
+**For Developers:** See [Development Guide](docs/development.md) for building, testing, and contributing to the extension.
+
 ## Documentation
 
-- **[User Guide](docs/user-guide.md)** - Installation, configuration, and usage
-- **[Development Guide](docs/development.md)** - Setup, building, and contributing
+- **[User Guide](docs/user-guide.md)** - For extension users: installation, configuration, and usage
+- **[Development Guide](docs/development.md)** - For developers: building, debugging, and contributing to the extension
 - **[AGENTS.md](AGENTS.md)** - Architecture and technical decisions
 - **[CHANGELOG.md](CHANGELOG.md)** - Version history
 
@@ -65,13 +65,14 @@ Set in VSCode Settings (`Preferences → Settings → Extensions → Trace Viewe
 
 ## Requirements
 
-- VSCode 1.92.0+
-- Node.js 16+
+- VSCode 1.92.0+ or Cursor (compatible with VSCode extensions)
+- Node.js 16+ and yarn
 - aitrace Python library for generating traces
 
 ## Integration
 
 Works seamlessly with [aitrace](../README.md):
+
 - Same path format (relative from workspace root)
 - Same workspace detection logic
 - NDJSON output directly compatible

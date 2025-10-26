@@ -79,16 +79,23 @@ db = None
 
 
 def normalize_record(d: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-    """Normalize a log record for storage."""
-    # Extract standard fields
-    ts = d.get("timestamp") or d.get("ts") or d.get("@timestamp")
-    level = d.get("level") or d.get("lvl")
-    logger = d.get("logger") or d.get("name")
-    event = d.get("event") or d.get("message") or d.get("msg")
+    """Normalize a log record for storage.
     
-    trace_id = d.get("trace_id")
-    span_id = d.get("span_id")
-    parent_span_id = d.get("parent_span_id") or d.get("parent_id")
+    Supports the new format with __tracer_meta__ namespace.
+    Extracts metadata from __tracer_meta__ if present, otherwise falls back to top-level.
+    """
+    # Check for new format with __tracer_meta__
+    meta = d.get("__tracer_meta__", {})
+    
+    # Extract standard fields from __tracer_meta__ first, then fall back to top-level
+    ts = meta.get("timestamp") or d.get("timestamp") or d.get("ts") or d.get("@timestamp")
+    level = meta.get("level") or d.get("level") or d.get("lvl")
+    logger = meta.get("logger") or d.get("logger") or d.get("name")
+    event = meta.get("event") or d.get("event") or d.get("message") or d.get("msg")
+    
+    trace_id = meta.get("trace_id") or d.get("trace_id")
+    span_id = meta.get("span_id") or d.get("span_id")
+    parent_span_id = meta.get("parent_span_id") or d.get("parent_span_id") or d.get("parent_id")
     
     # Must have trace and span IDs
     if not (trace_id and span_id):
@@ -97,8 +104,14 @@ def normalize_record(d: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     # Copy dict to avoid modifying original
     attrs = dict(d)
     
-    # Remove known fields from attrs
-    for key in ("timestamp", "ts", "@timestamp", "level", "lvl", "logger", "name",
+    # Remove __tracer_meta__ from attrs (metadata is stored in dedicated columns)
+    attrs.pop("__tracer_meta__", None)
+    
+    # Remove duplicate timestamp if present (compat mode)
+    attrs.pop("timestamp", None)
+    
+    # Remove other top-level metadata fields (in case of compat mode or old format)
+    for key in ("ts", "@timestamp", "level", "lvl", "logger", "name",
                 "event", "message", "msg", "trace_id", "span_id", "parent_span_id", "parent_id"):
         attrs.pop(key, None)
     

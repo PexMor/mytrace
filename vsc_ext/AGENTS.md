@@ -367,8 +367,8 @@ try {
 
 ```bash
 cd vsc_ext
-npm install
-npm run watch  # Start TypeScript compiler in watch mode
+yarn install
+yarn watch  # Start TypeScript compiler in watch mode
 ```
 
 ### Testing
@@ -388,7 +388,7 @@ npm run watch  # Start TypeScript compiler in watch mode
 ### Packaging
 
 ```bash
-npm run package  # Creates .vsix file
+yarn package  # Creates .vsix file
 ```
 
 ---

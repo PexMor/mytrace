@@ -268,5 +268,6 @@ python -m aitrace --db-path /tmp/logs.db
 ## See Also
 
 - [README.md](../README.md) - Main documentation
-- [QUICKSTART.md](../QUICKSTART.md) - Quick start guide
+- [Quick Start Guide](quickstart.md) - Quick start guide
 - [CHANGELOG.md](../CHANGELOG.md) - Version history
+- [AGENTS.md](../AGENTS.md) - Architecture and design decisions

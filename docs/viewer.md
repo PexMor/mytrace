@@ -665,7 +665,10 @@ Possible additions:
 
 ## See Also
 
+- [README.md](../README.md) - Main documentation
 - [Quick Start Guide](quickstart.md) - Get started quickly
 - [Configuration Guide](configuration.md) - Server configuration
 - [Deployment Guide](deployment.md) - GitHub Pages deployment
+- [Trace Record Format](trace_record_format.md) - Log format specification
 - [AGENTS.md](../AGENTS.md) - Architecture and technical details
+- [CHANGELOG.md](../CHANGELOG.md) - Version history

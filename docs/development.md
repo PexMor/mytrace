@@ -667,9 +667,11 @@ PRAGMA index_info('idx_logs_trace');
 
 ## See Also
 
+- [README.md](../README.md) - Main documentation
+- [AGENTS.md](../AGENTS.md) - Architecture reference
+- [CHANGELOG.md](../CHANGELOG.md) - Version history
 - [Quick Start Guide](quickstart.md)
 - [Configuration Guide](configuration.md)
 - [Deployment Guide](deployment.md)
 - [Viewer Documentation](viewer.md)
-- [AGENTS.md](../AGENTS.md) - Architecture reference
-- [CHANGELOG.md](../CHANGELOG.md) - Version history
+- [Trace Record Format](trace_record_format.md) - Log format specification

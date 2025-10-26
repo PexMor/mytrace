@@ -255,7 +255,9 @@ with open('vscode_plugin_format_example.jsonl', 'r') as f:
 
 ### See Also
 
-- [Source Location Documentation](source_location_tracking.md)
+- [Source Location Documentation](../source_location_tracking.md)
+- [Trace Record Format](../trace_record_format.md) - Log format specification
+- [README.md](../../README.md) - Main documentation
 - [VSCode Extension API](https://code.visualstudio.com/api)
 - [CodeLens Provider](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#codelens-show-actionable-context-information-within-source-code)
 - [Decoration API](https://code.visualstudio.com/api/references/vscode-api#TextEditorDecorationType)

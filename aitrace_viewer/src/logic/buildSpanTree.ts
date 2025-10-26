@@ -3,14 +3,17 @@ export function buildSpanForest(rows: any[]) {
   
   // First pass: create all nodes and collect logs by span
   for (const r of rows) {
-    const traceId = r.trace_id ?? 'no-trace';
-    const spanId = r.span_id ?? crypto.randomUUID();
-    const parentId = r.parent_span_id ?? null;
+    // Extract metadata from __tracer_meta__ or fall back to top-level
+    const meta = r.__tracer_meta__ || {};
+    
+    const traceId = meta.trace_id || r.trace_id || 'no-trace';
+    const spanId = meta.span_id || r.span_id || crypto.randomUUID();
+    const parentId = meta.parent_span_id || r.parent_span_id || null;
     
     // Use aitrace format: timestamp and event
-    const timestamp = r.timestamp;
-    const message = r.event;
-    const level = r.level ?? 'info';
+    const timestamp = meta.timestamp || r.timestamp;
+    const message = meta.event || r.event;
+    const level = meta.level || r.level || 'info';
     
     if (!traces.has(traceId)) traces.set(traceId, { roots: [], nodes: new Map() });
     const t = traces.get(traceId);
@@ -98,7 +101,44 @@ export function buildSpanForest(rows: any[]) {
     t.roots.forEach(r => dfs(r, 0));
   }
   
-  // Fourth pass: compute trace metadata (name, time span, duration)
+  // Fourth pass: filter provisional span lifecycle events
+  // Remove .start entries from raw logs when .end exists for the same span
+  for (const t of traces.values()) {
+    for (const node of t.nodes.values()) {
+      if (node.raw && node.raw.length > 0) {
+        // Check if this span has both .start and .end events
+        const meta = node.raw[0]?.__tracer_meta__ || node.raw[0] || {};
+        const spanId = meta.span_id || node.raw[0]?.span_id;
+        
+        let hasStart = false;
+        let hasEnd = false;
+        
+        for (const log of node.raw) {
+          const logMeta = log.__tracer_meta__ || log;
+          const event = logMeta.event || log.event || '';
+          const isProvisional = logMeta.provisional || log.provisional;
+          
+          if (event.endsWith('.start') && isProvisional) {
+            hasStart = true;
+          } else if (event.endsWith('.end')) {
+            hasEnd = true;
+          }
+        }
+        
+        // If both exist, filter out the provisional .start entry
+        if (hasStart && hasEnd) {
+          node.raw = node.raw.filter(log => {
+            const logMeta = log.__tracer_meta__ || log;
+            const event = logMeta.event || log.event || '';
+            const isProvisional = logMeta.provisional || log.provisional;
+            return !(event.endsWith('.start') && isProvisional);
+          });
+        }
+      }
+    }
+  }
+  
+  // Fifth pass: compute trace metadata (name, time span, duration)
   for (const [traceId, t] of traces.entries()) {
     // Trace name from first root span
     const rootNode = t.roots.length > 0 ? t.nodes.get(t.roots[0]) : null;

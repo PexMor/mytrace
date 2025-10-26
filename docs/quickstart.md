@@ -104,7 +104,7 @@ export AITRACE_LOG_LEVEL=debug
 aitrace
 ```
 
-See [docs/configuration.md](docs/configuration.md) for full configuration guide.
+See [Configuration Guide](configuration.md) for full configuration guide.
 
 ---
 
@@ -121,7 +121,8 @@ See [docs/configuration.md](docs/configuration.md) for full configuration guide.
 
 ## Need Help?
 
-- **Full docs**: [README.md](README.md)
-- **Configuration**: [docs/configuration.md](docs/configuration.md)
-- **Example code**: [test/](test/) directory
-- **Test utilities**: [test/README.md](test/README.md)
+- **Full docs**: [README.md](../README.md)
+- **Configuration**: [configuration.md](configuration.md)
+- **Architecture**: [AGENTS.md](../AGENTS.md)
+- **Example code**: [test/](../test/) directory
+- **Test utilities**: [test/README.md](../test/README.md)

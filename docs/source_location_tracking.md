@@ -307,5 +307,7 @@ Potential improvements for the plugin integration:
 
 ## See Also
 
-- [BufferedLogger Documentation](../README.md#buffered-logger)
-- [Test Examples](../test/README.md)
+- [README.md](../README.md) - Main documentation
+- [VSCode Plugin Format](vscode/plugin_format.md) - VSCode plugin integration
+- [Configuration Guide](configuration.md) - Server configuration
+- [Test Examples](../test/README.md) - Example scripts

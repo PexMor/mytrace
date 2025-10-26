@@ -291,12 +291,15 @@ class BufferedLogger:
         For HTTP and file targets, logs are only buffered (not printed).
         For stdout target, logs are buffered AND printed.
         """
+        from .logging_config import _wrap_tracer_metadata_processor
+        
         processors = [
             structlog.contextvars.merge_contextvars,
             structlog.processors.TimeStamper(fmt="iso"),
             _source_location_processor,  # Add source file and line info
-            _otel_ids_processor,
+            _otel_ids_processor,  # Add trace/span IDs
             structlog.processors.dict_tracebacks,
+            _wrap_tracer_metadata_processor,  # Wrap metadata into __tracer_meta__
             self._buffering_processor,
         ]
         
@@ -432,19 +435,20 @@ class BufferedLogger:
         # Build log entries HTML
         logs_html = []
         for log_entry in self.buffer:
-            level = log_entry.get("level", "info").lower()
-            event = log_entry.get("event", "")
-            timestamp = log_entry.get("timestamp", "")
+            # Extract metadata from __tracer_meta__ or fall back to top-level
+            meta = log_entry.get("__tracer_meta__", {})
+            level = meta.get("level", log_entry.get("level", "info")).lower()
+            event = meta.get("event", log_entry.get("event", ""))
+            timestamp = meta.get("timestamp", log_entry.get("timestamp", ""))
             
             # Extract trace information
-            trace_id = log_entry.get("trace_id", "N/A")
-            span_id = log_entry.get("span_id", "N/A")
-            parent_span_id = log_entry.get("parent_span_id", "N/A")
+            trace_id = meta.get("trace_id", log_entry.get("trace_id", "N/A"))
+            span_id = meta.get("span_id", log_entry.get("span_id", "N/A"))
+            parent_span_id = meta.get("parent_span_id", log_entry.get("parent_span_id", "N/A"))
             
-            # Create details dict (exclude standard fields)
+            # Create details dict (exclude __tracer_meta__ and duplicate timestamp if present)
             details = {k: v for k, v in log_entry.items() 
-                      if k not in ["level", "event", "timestamp", "trace_id", 
-                                   "span_id", "parent_span_id", "logger"]}
+                      if k not in ["__tracer_meta__", "timestamp"]}
             
             details_json = json.dumps(details, indent=2, default=_json_serializer)
             
@@ -521,6 +525,10 @@ class BufferedLogger:
     def trace_context(self, tracer, span_name: str):
         """Context manager that auto-flushes logs after trace completion.
         
+        Emits span lifecycle events:
+        - {span_name}.start: When context is entered (provisional)
+        - {span_name}.end: When context is exited (final)
+        
         Args:
             tracer: OpenTelemetry tracer instance
             span_name: Name for the root span
@@ -535,6 +543,18 @@ class BufferedLogger:
         """
         self.clear()
         with tracer.start_as_current_span(span_name):
-            yield self.logger
-        self.flush()
+            # Emit span start event (provisional)
+            self.logger.info(f"{span_name}.start", provisional=True)
+            
+            try:
+                yield self.logger
+                
+                # Emit span end event (final)
+                self.logger.info(f"{span_name}.end")
+            except Exception as e:
+                # Emit span end event even on error
+                self.logger.error(f"{span_name}.end", error=str(e), exc_info=True)
+                raise
+            finally:
+                self.flush()
 

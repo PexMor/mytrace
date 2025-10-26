@@ -16,26 +16,36 @@ Complete guide to using the Trace Viewer VSCode extension with aitrace.
 
 ## Installation
 
+### From Marketplace (Coming Soon)
+
+Once published, install directly from VSCode/Cursor marketplace:
+
+1. Open Extensions view (`Cmd+Shift+X` / `Ctrl+Shift+X`)
+2. Search for "Trace Viewer"
+3. Click "Install"
+
 ### From VSIX Package
 
-```bash
-# Build the extension
-cd vsc_ext
-npm run package
+If you have a pre-built `.vsix` file:
 
+```bash
 # Install in VSCode
 code --install-extension trace-viewer-0.1.0.vsix
+
+# Install in Cursor
+cursor --install-extension trace-viewer-0.1.0.vsix
 ```
 
-### From Source (Development)
+### For Extension Developers
 
-```bash
-cd vsc_ext
-npm install
-npm run build
-```
+If you want to modify or contribute to the extension, see the **[Development Guide](development.md)** for complete setup instructions including:
 
-Press `F5` to launch Extension Development Host.
+- Setting up the development environment (VSCode/Cursor)
+- Building and packaging from source
+- Running in Extension Development Host
+- Debugging with breakpoints
+- Testing workflows
+- Publishing to marketplace
 
 ---
 
@@ -59,12 +69,14 @@ buffered.flush()
 ### 2. Load Traces in VSCode
 
 **Option A: Manual Load**
+
 1. Open Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
 2. Run: `Trace: Load trace file (NDJSON/JSON)`
 3. Select your trace file (e.g., `~/traces/app.jsonl`)
 4. Choose "Yes" when asked to watch the file
 
 **Option B: Auto-Watch Configuration**
+
 1. Open Settings (`Cmd+,` / `Ctrl+,`)
 2. Search: `traceMarkers.traceFile`
 3. Set absolute path: `/Users/you/traces/app.jsonl`
@@ -84,22 +96,25 @@ buffered.flush()
 The extension reads two formats:
 
 **NDJSON (Newline-Delimited JSON)**
+
 ```json
 {"event": "login", "file": "src/auth.py", "line": 42, "level": "info", "user_id": 123}
 {"event": "query", "file": "src/db.py", "line": 89, "level": "info", "query": "SELECT *"}
 ```
 
 **JSON Array**
+
 ```json
 [
-  {"event": "login", "file": "src/auth.py", "line": 42, "level": "info"},
-  {"event": "query", "file": "src/db.py", "line": 89, "level": "info"}
+  { "event": "login", "file": "src/auth.py", "line": 42, "level": "info" },
+  { "event": "query", "file": "src/db.py", "line": 89, "level": "info" }
 ]
 ```
 
 ### Required Fields
 
 Each trace entry must have:
+
 - `file` - Relative path from workspace root (e.g., `"src/auth.py"`)
 - `line` - Line number, 1-based (e.g., `42`)
 
@@ -120,21 +135,25 @@ Each trace entry must have:
 ### Visual Markers
 
 **Gutter Icons**
+
 - 🔵 Blue circle = info level
 - 🟡 Yellow triangle = warning level
 - 🔴 Red cross = error level
 
 **Overview Ruler**
+
 - Colored marks on scrollbar
 - Click to jump to trace
 
 **Hover Tooltips**
+
 - Hover over gutter icon
 - Shows: trace ID, label, timestamp, payload preview
 
 ### CodeLens
 
 Appears above each traced line:
+
 ```python
 def handle_login(user_id, password):
     🔍 Trace: user_login  ← Click to open details
@@ -144,6 +163,7 @@ def handle_login(user_id, password):
 ### Details Panel
 
 Click CodeLens to open webview with:
+
 - **Metadata**: file, line, function, trace_id, timestamp
 - **Full payload**: formatted JSON
 - **Split view**: code on left, details on right
@@ -157,11 +177,13 @@ Click CodeLens to open webview with:
 Access via: `Preferences → Settings → Extensions → Trace Viewer`
 
 #### `traceMarkers.traceFile`
+
 - **Type**: `string`
 - **Default**: `""` (empty)
 - **Description**: Absolute path to trace file to watch
 
 **Example**:
+
 ```json
 {
   "traceMarkers.traceFile": "/Users/you/project/traces/app.jsonl"
@@ -169,11 +191,13 @@ Access via: `Preferences → Settings → Extensions → Trace Viewer`
 ```
 
 When set, the extension automatically:
+
 - Loads traces on startup
 - Watches file for changes
 - Reloads when file is modified
 
 #### `traceMarkers.autoReload`
+
 - **Type**: `boolean`
 - **Default**: `true`
 - **Description**: Auto-reload when trace file changes
@@ -181,6 +205,7 @@ When set, the extension automatically:
 Set to `false` to disable file watching.
 
 #### `traceMarkers.maxTraces`
+
 - **Type**: `number`
 - **Default**: `10000`
 - **Range**: 100 - 100,000
@@ -191,6 +216,7 @@ Increase for large trace files, decrease if experiencing slowness.
 ### Workspace Root Detection
 
 The extension automatically detects your workspace root by looking for:
+
 1. `.git` directory (highest priority)
 2. `pyproject.toml`
 3. `setup.py`
@@ -205,21 +231,25 @@ This ensures trace file paths (which are relative) resolve correctly to your sou
 All commands available via Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`):
 
 ### `Trace: Load trace file (NDJSON/JSON)`
+
 - Opens file picker
 - Loads NDJSON or JSON array file
 - Asks if you want to watch the file
 
 ### `Trace: Toggle Decorations`
+
 - Show/hide all trace markers
 - Affects gutter icons, hover tooltips, and CodeLens
 - Useful for temporarily clearing visual clutter
 
 ### `Trace: Set Trace File (watch)`
+
 - Configure file path to watch
 - Saves to workspace settings
 - Starts watching immediately
 
 ### `Trace: Clear All Traces`
+
 - Removes all loaded traces
 - Stops file watching
 - Clears all decorations
@@ -231,42 +261,51 @@ All commands available via Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`):
 ### Traces Not Appearing
 
 **Check file path format**
+
 - Paths must be relative to workspace root
 - Example: `"test/01_initial.py"` not `"/absolute/path/test/01_initial.py"`
 
 **Verify workspace root**
+
 - Extension detects workspace using `.git`, `pyproject.toml`, etc.
 - Check status bar for loaded traces count
 
 **Check line numbers**
+
 - Must be 1-based (line 1 = first line)
 - Not 0-based
 
 **Reload traces**
+
 - Run `Trace: Clear All Traces`
 - Then `Trace: Load trace file` again
 
 ### File Watching Not Working
 
 **Use absolute paths**
+
 - `traceMarkers.traceFile` must be absolute path
 - Example: `/Users/you/traces/app.jsonl`
 - Not: `~/traces/app.jsonl` (use full path)
 
 **Check auto-reload setting**
+
 - Verify `traceMarkers.autoReload` is `true`
 
 **File permissions**
+
 - Ensure VSCode has read access to trace file
 - Check file exists and is readable
 
 **Manual reload workaround**
+
 - Use `Trace: Load trace file` command manually
 - Set up keyboard shortcut if needed
 
 ### Performance Issues
 
 **Reduce max traces**
+
 ```json
 {
   "traceMarkers.maxTraces": 5000
@@ -274,35 +313,42 @@ All commands available via Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`):
 ```
 
 **Filter traces before loading**
+
 - Generate smaller trace files
 - Load specific time windows
 - Filter by trace_id
 
 **Clear old traces**
+
 - Run `Trace: Clear All Traces`
 - Load fresh traces
 
 ### Incorrect Line Markers
 
 **Workspace root mismatch**
+
 - Check if aitrace and extension detect same workspace root
 - Manually verify paths resolve correctly
 
 **Multiple workspace folders**
+
 - Extension uses first workspace folder
 - Ensure trace files reference correct workspace
 
 **Path separators**
+
 - Use forward slashes (`/`) in trace files
 - Extension normalizes paths automatically
 
 ### Webview Not Opening
 
 **Check trace has valid ID**
+
 - Each trace needs unique `span_id` or `id`
 - Verify trace file format
 
 **Reload window**
+
 - `Developer: Reload Window` command
 - Restart VSCode if issues persist
 
@@ -392,12 +438,14 @@ Set up custom shortcuts for frequent commands:
 ### Filter by Severity
 
 Currently all traces are shown. To see only errors:
+
 1. Generate filtered trace file with only error logs
 2. Load that file in extension
 
 ### Multiple Trace Files
 
 To switch between different trace files:
+
 1. Use `Trace: Clear All Traces`
 2. Load new file with `Trace: Load trace file`
 
@@ -410,11 +458,13 @@ Or change `traceMarkers.traceFile` setting.
 ### Path Compatibility
 
 aitrace generates relative paths:
+
 ```json
 {"file": "test/01_initial.py", ...}
 ```
 
 Extension resolves to absolute:
+
 ```
 /Users/you/project/test/01_initial.py
 ```
@@ -424,6 +474,7 @@ Both use same workspace root detection, ensuring paths always match!
 ### All Fields Preserved
 
 Extension displays all fields from aitrace logs:
+
 - Standard fields: file, line, level, trace_id, span_id
 - Custom fields: user_id, session_id, etc.
 - Full payload visible in details panel
@@ -444,8 +495,7 @@ Development traces can be viewed live in VSCode!
 
 ## See Also
 
-- [Development Guide](development.md) - Setup and build instructions
+- [Development Guide](development.md) - For extension developers: setup, building, debugging, and contributing
 - [AGENTS.md](../AGENTS.md) - Architecture and design decisions
 - [CHANGELOG.md](../CHANGELOG.md) - Version history
 - [aitrace Documentation](../../README.md) - Python library docs
-

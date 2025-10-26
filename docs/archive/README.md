@@ -8,6 +8,7 @@ These files are kept for reference but are no longer part of the main documentat
 
 ### Implementation Details
 
+- **implementation_summary.md** - Span lifecycle reform implementation (v2.0, 2025-10-26)
 - **buffered_logger_refactoring.md** - Implementation details of BufferedLogger refactoring (v0.2.0)
 - **target_modes_feature.md** - Detailed notes on target modes feature development (v0.2.0)
 - **config_system_summary.md** - Implementation summary of configuration system
@@ -56,4 +57,4 @@ These files are available in this directory for:
 
 ---
 
-**Last Updated:** 2025-10-24
+**Last Updated:** 2025-10-26

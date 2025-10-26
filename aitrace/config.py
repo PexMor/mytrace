@@ -1,5 +1,4 @@
 """Configuration management for AI Trace Viewer."""
-import sys
 from pathlib import Path
 from typing import Optional, Union
 
@@ -103,7 +102,7 @@ def create_parser() -> configargparse.ArgumentParser:
         default=None,
         help=(
             "Path to SQLite database file. "
-            f"Defaults to {{config_dir}}/logs.db (~/.config/aitrace/logs.db)"
+            "Defaults to {config_dir}/logs.db (~/.config/aitrace/logs.db)"
         ),
     )
     
@@ -133,6 +132,16 @@ def create_parser() -> configargparse.ArgumentParser:
         type=int,
         default=1,
         help="Number of worker processes (not recommended with SQLite)",
+    )
+    
+    parser.add_argument(
+        "--compat-mode",
+        action="store_true",
+        default=False,
+        help=(
+            "Enable compatibility mode: duplicates timestamp at top-level "
+            "for tools like Elastic/OpenTelemetry (default: false)"
+        ),
     )
     
     return parser
@@ -184,6 +193,9 @@ access-log: false
 
 # Worker processes (keep at 1 for SQLite)
 workers: 1
+
+# Trace format options
+# compat-mode: false  # Set to true to duplicate timestamp at top-level for external tools
 """
 
 
@@ -210,6 +222,9 @@ access-log = false
 
 # Worker processes (keep at 1 for SQLite)
 workers = 1
+
+# Trace format options
+# compat-mode = false  # Set to true to duplicate timestamp at top-level for external tools
 """
 
 
@@ -235,8 +250,38 @@ def init_config_files():
     ]
     
     if not any(c.exists() for c in active_configs):
-        print(f"\nNo active config found. To create one, run:")
+        print("\nNo active config found. To create one, run:")
         print(f"  cp {path_to_display(yaml_config)} {path_to_display(config_dir / 'config.yaml')}")
-        print(f"  # or")
+        print("  # or")
         print(f"  cp {path_to_display(toml_config)} {path_to_display(config_dir / 'config.toml')}")
+
+
+# Global config instance
+_global_config = None
+
+
+def get_config():
+    """Get or load the global configuration.
+    
+    Returns:
+        Configuration namespace with all settings.
+        
+    Note:
+        This loads configuration from environment variables and config files.
+        For programmatic configuration, modify the returned namespace directly.
+    """
+    global _global_config
+    if _global_config is None:
+        _global_config = load_config([])
+    return _global_config
+
+
+def set_compat_mode(enabled: bool):
+    """Set compatibility mode for timestamp duplication.
+    
+    Args:
+        enabled: If True, duplicate timestamp at top-level in addition to __tracer_meta__
+    """
+    config = get_config()
+    config.compat_mode = enabled
 

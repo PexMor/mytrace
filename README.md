@@ -6,40 +6,29 @@ A lightweight, self-contained system for viewing structured logs as collapsible 
 
 - 🌳 **Collapsible Trace Trees** - Visualize function call hierarchies with nested spans
 - 📊 **Structured Logging** - JSON logs with automatic trace/span ID injection
-- 📍 **Source Location Tracking** - Automatic file path and line number capture for IDE integration
+- 📍 **Source Location Tracking** - Automatic file path and line number capture
 - 🔗 **No External Dependencies** - No Zipkin, Jaeger, or other backend required
 - 🚀 **Simple Setup** - Just SQLite + FastAPI + Static HTML/JS
-- 🎨 **Modern UI** - Clean, responsive web interface
-- 🔍 **Search & Filter** - Find logs by level, event, timestamp
+- 🎨 **Modern UI** - Clean, responsive web interface with advanced features
 - 🔌 **VSCode/Cursor Plugin Ready** - Compatible with IDE plugins for in-editor trace viewing
 
 ## Quick Start
 
 ```bash
-# 1. Install
+# Install
 uv sync
 
-# 2. Start the viewer server
+# Start the viewer server
 uv run aitrace
 
-# 3. Run example (in another terminal)
+# Run example (in another terminal)
 uv sync --extra examples
 uv run python test/02_simple.py
 
-# 4. View traces at http://localhost:8000
+# View traces at http://localhost:8000
 ```
 
-See [📖 Quick Start Guide](docs/quickstart.md) for detailed instructions.
-
-## Installation
-
-```bash
-# Install with uv (recommended)
-uv sync
-
-# Install with example dependencies (for test scripts)
-uv sync --extra examples
-```
+For detailed instructions, see the [📖 Quick Start Guide](docs/quickstart.md).
 
 ## Basic Usage
 
@@ -65,45 +54,24 @@ with buffered.trace_context(tracer, "my_operation"):
 
 ## Documentation
 
-### Getting Started
+### User Guides
 
 - [📖 Quick Start Guide](docs/quickstart.md) - Get up and running in 3 steps
 - [⚙️ Configuration Guide](docs/configuration.md) - Server and environment setup
-- [🏗️ Architecture & Design](AGENTS.md) - Technical decisions for developers and AI agents
+- [👁️ Trace Viewer Guide](docs/viewer.md) - Web-based trace visualization
+- [🚀 Deployment Guide](docs/deployment.md) - Production deployment options
+
+### Developer Resources
+
+- [🏗️ Architecture & Design Decisions](AGENTS.md) - Technical decisions for developers and AI agents
+- [🛠️ Development Guide](docs/development.md) - Setup, testing, and contributing
+- [📝 Changelog](CHANGELOG.md) - Version history and breaking changes
+- [📋 Trace Record Format](docs/trace_record_format.md) - JSON format specification
 
 ### Advanced Topics
 
-- [🚀 Deployment Guide](docs/deployment.md) - GitHub Pages deployment
-- [👁️ Trace Viewer](docs/viewer.md) - Web-based trace visualization
-- [🛠️ Development Notes](docs/development.md) - Internal implementation details
-
-### Reference
-
-- [📝 Changelog](CHANGELOG.md) - Version history and changes
-
-## Project Structure
-
-```
-mytrace/
-├── aitrace/              # Python tracing library
-│   ├── buffer.py         # BufferedLogger for log ingestion
-│   ├── server.py         # FastAPI server + SQLite backend
-│   └── static/           # Web UI (simple viewer)
-├── aitrace_viewer/       # Advanced web viewer (Preact + Vite)
-│   └── src/              # TypeScript source
-├── test/                 # Example scripts
-├── docs/                 # Documentation
-│   ├── quickstart.md     # Quick start guide
-│   ├── configuration.md  # Configuration reference
-│   ├── deployment.md     # Deployment guide
-│   ├── viewer.md         # Trace viewer documentation
-│   ├── development.md    # Development notes
-│   ├── app/              # Built viewer application
-│   └── archive/          # Historical documentation
-├── README.md             # This file
-├── AGENTS.md             # Architecture & technical decisions
-└── CHANGELOG.md          # Version history
-```
+- [📍 Source Location Tracking](docs/source_location_tracking.md) - IDE integration details
+- [🔌 VSCode Plugin Format](docs/vscode_plugin_format_README.md) - Plugin integration guide
 
 ## Architecture Overview
 
@@ -129,9 +97,49 @@ mytrace/
 
 See [AGENTS.md](AGENTS.md) for comprehensive architectural documentation.
 
+## Project Structure
+
+```
+mytrace/
+├── aitrace/              # Python tracing library
+│   ├── buffer.py         # BufferedLogger for log ingestion
+│   ├── server.py         # FastAPI server + SQLite backend
+│   └── static/           # Web UI (simple viewer)
+├── aitrace_viewer/       # Advanced web viewer (Preact + Vite)
+├── test/                 # Example scripts
+├── docs/                 # Documentation
+│   ├── quickstart.md
+│   ├── configuration.md
+│   ├── deployment.md
+│   ├── viewer.md
+│   ├── development.md
+│   └── archive/          # Historical documentation
+├── README.md             # This file
+├── AGENTS.md             # Architecture & technical decisions
+└── CHANGELOG.md          # Version history
+```
+
+## Examples
+
+```bash
+# Simple chatbot
+uv run python test/02_simple.py
+
+# Router with multiple agents
+uv run python test/03_router.py
+
+# BufferedLogger patterns
+uv run python test/04_buffered_simple.py
+
+# Output target modes (HTTP, file, stdout)
+uv run python test/05_target_modes.py
+```
+
+See [test/README.md](test/README.md) for detailed example documentation.
+
 ## Configuration
 
-Quick examples:
+Quick configuration examples:
 
 ```bash
 # Custom port
@@ -151,86 +159,45 @@ aitrace
 
 See [Configuration Guide](docs/configuration.md) for complete reference.
 
+## Requirements
+
+- Python 3.10+
+- Modern web browser for UI
+- Node.js 18+ (optional, for advanced viewer development)
+
+## Installation Options
+
+### Using uv (recommended)
+```bash
+uv sync
+```
+
+### Using pip
+```bash
+pip install -e .
+```
+
+### With example dependencies
+```bash
+uv sync --extra examples
+```
+
 ## Use Cases
 
 **Development & Debugging**
-
 - Trace LangGraph/LangChain execution flows
 - Debug nested function calls
 - Inspect LLM prompts and responses
 
 **Production Monitoring**
-
 - Lightweight tracing without external services
 - Local SQLite storage for moderate volumes
 - Export logs to files for archival
 
 **Testing & CI/CD**
-
 - Capture traces as test artifacts
 - Generate HTML traces offline
 - File-based logging for reproducibility
-
-## Examples
-
-```bash
-# Simple chatbot
-uv run python test/02_simple.py
-
-# Router with multiple agents
-uv run python test/03_router.py
-
-# BufferedLogger patterns
-uv run python test/04_buffered_simple.py
-
-# Output target modes
-uv run python test/05_target_modes.py
-```
-
-See [test/README.md](test/README.md) for detailed example documentation.
-
-## API Endpoints
-
-- `POST /api/ingest` - Ingest log records
-- `GET /api/traces` - List all traces with metadata
-- `GET /api/trace/{id}` - Get detailed trace with tree structure
-- `GET /api/search` - Search logs with filters
-
-## Source Location Tracking
-
-Every log entry automatically includes the source file location:
-
-```json
-{
-  "event": "user_login",
-  "file": "src/auth/handler.py",  // relative to workspace root
-  "line": 42,                      // line number
-  "function": "handle_login",      // function name
-  "trace_id": "...",
-  "span_id": "..."
-}
-```
-
-**Features:**
-- ✅ Automatic workspace root detection (looks for `.git`, `pyproject.toml`, etc.)
-- ✅ Relative paths for portability across machines
-- ✅ Compatible with VSCode/Cursor plugin format
-- ✅ Minimal performance overhead (~10-50μs per log)
-
-**Manual Configuration:**
-```python
-from aitrace import logging_config
-
-# Override auto-detected workspace root
-logging_config.set_workspace_root("/path/to/project")
-```
-
-See [Source Location Documentation](docs/source_location_tracking.md) for details and VSCode plugin integration.
-
-## Requirements
-
-- Python 3.10+
-- Modern web browser for UI
 
 ## License
 
@@ -238,7 +205,7 @@ MIT - See [LICENSE](LICENSE) for details
 
 ## Credits
 
-Built on OpenTelemetry, structlog, and FastAPI concepts. Inspired by Jaeger and Zipkin, simplified for local development and small-scale production use.
+Built on OpenTelemetry, structlog, and FastAPI. Inspired by Jaeger and Zipkin, simplified for local development and small-scale production use.
 
 ---
 

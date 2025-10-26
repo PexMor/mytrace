@@ -167,3 +167,13 @@ jobs:
 
 - Uses fallback for insecure origins (http://localhost)
 - Should work normally on GitHub Pages (https://)
+
+---
+
+## See Also
+
+- [README.md](../README.md) - Main documentation
+- [Viewer Documentation](viewer.md) - Web viewer features
+- [Configuration Guide](configuration.md) - Server configuration
+- [Development Guide](development.md) - Development setup
+- [AGENTS.md](../AGENTS.md) - Architecture and design decisions

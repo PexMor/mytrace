@@ -18,7 +18,7 @@ Guide for developers contributing to or modifying the Trace Viewer extension.
 
 ## Prerequisites
 
-- **Node.js** 16+ and npm
+- **Node.js** 16+ and yarn
 - **VSCode** 1.92.0 or later
 - **aitrace** Python library (for generating test traces)
 - Basic TypeScript knowledge
@@ -31,10 +31,11 @@ Guide for developers contributing to or modifying the Trace Viewer extension.
 
 ```bash
 cd vsc_ext
-npm install
+yarn install
 ```
 
 This installs:
+
 - TypeScript compiler
 - VSCode extension types (@types/vscode)
 - Development tools (eslint, vsce)
@@ -42,18 +43,26 @@ This installs:
 ### 2. Build Extension
 
 ```bash
-npm run build
+yarn build
 ```
 
 Compiles TypeScript files from `src/` to JavaScript in `out/`.
 
-### 3. Open in VSCode
+### 3. Open in Your Editor
+
+**VSCode:**
 
 ```bash
 code .
 ```
 
-Open the `vsc_ext` folder in VSCode to use the debug configuration.
+**Cursor:**
+
+```bash
+cursor .
+```
+
+Open the `vsc_ext` folder to use the debug configuration. Both editors support VSCode extension development.
 
 ---
 
@@ -64,7 +73,7 @@ Open the `vsc_ext` folder in VSCode to use the debug configuration.
 Start TypeScript compiler in watch mode:
 
 ```bash
-npm run watch
+yarn watch
 ```
 
 - Automatically recompiles on file changes
@@ -73,17 +82,31 @@ npm run watch
 
 ### Launch Extension Development Host
 
+#### In VSCode
+
 1. Press `F5` (or `Run → Start Debugging`)
 2. VSCode launches new window with extension loaded
 3. Make changes to code
 4. In Extension Development Host, reload window (`Cmd+R`)
 
+#### In Cursor
+
+1. Press `F5` (or open Run & Debug panel with `Cmd+Shift+D`, then click "Run Extension")
+2. Cursor launches new Extension Development Host window
+3. Make changes to code in main Cursor window
+4. In Extension Development Host window: `Cmd+R` to reload
+
+**Note:** Cursor is based on VSCode, so all VSCode extension development features work identically.
+
 ### Hot Reload
 
 After making code changes:
+
 1. Save file (TypeScript auto-compiles if watch mode is running)
 2. In Extension Development Host window: `Cmd+R` / `Ctrl+R`
 3. Or Command Palette → `Developer: Reload Window`
+
+**Tip for Cursor users:** Keep your main Cursor window (with source code) and Extension Development Host window side-by-side for efficient development.
 
 ---
 
@@ -129,6 +152,7 @@ vsc_ext/
 ### Key Files
 
 **src/extension.ts**
+
 - `activate()` - Extension entry point
 - `deactivate()` - Cleanup on extension unload
 - `TraceItem` type - Data structure for traces
@@ -137,12 +161,14 @@ vsc_ext/
 - Command handlers - User action implementations
 
 **package.json**
+
 - Extension metadata
 - Command definitions
 - Configuration options
 - Dependencies
 
 **tsconfig.json**
+
 - TypeScript compiler settings
 - ES2020 target
 - Strict mode enabled
@@ -154,7 +180,7 @@ vsc_ext/
 ### Development Build
 
 ```bash
-npm run build
+yarn build
 ```
 
 - Compiles TypeScript to JavaScript
@@ -164,7 +190,7 @@ npm run build
 ### Watch Build
 
 ```bash
-npm run watch
+yarn watch
 ```
 
 - Continuous compilation
@@ -174,10 +200,10 @@ npm run watch
 ### Production Build
 
 ```bash
-npm run vscode:prepublish
+yarn vscode:prepublish
 ```
 
-- Runs `npm run build`
+- Runs `yarn build`
 - Called automatically by `vsce package`
 - Prepares for distribution
 
@@ -258,7 +284,7 @@ done
 
 ## Debugging
 
-### VSCode Debugger
+### VSCode / Cursor Debugger
 
 1. Set breakpoints in `src/extension.ts`
 2. Press `F5` to start debugging
@@ -267,37 +293,60 @@ done
 5. Debugger stops at breakpoints
 
 **Debug Console**
+
 - View variables
 - Evaluate expressions
 - See console.log output
 
 **Call Stack**
+
 - Navigate execution flow
 - See function calls
 
+**Cursor-specific tips:**
+
+- Debugger works identically to VSCode
+- Use Debug Console to interact with AI while debugging
+- Set conditional breakpoints for complex scenarios
+- Hover over variables to see values inline
+
 ### Extension Host Logs
 
-View logs: `Help → Toggle Developer Tools → Console`
+**View logs:**
+
+- VSCode: `Help → Toggle Developer Tools → Console`
+- Cursor: `Help → Toggle Developer Tools → Console`
 
 Add debug logging:
+
 ```typescript
-console.log('Loading trace file:', filePath);
-console.log('Found traces:', traces.length);
+console.log("Loading trace file:", filePath);
+console.log("Found traces:", traces.length);
 ```
+
+**Cursor AI Integration:**
+While debugging, you can ask Cursor AI to:
+
+- Explain error messages from the console
+- Suggest fixes for runtime issues
+- Generate test cases based on logged data
 
 ### Common Issues
 
 **Extension doesn't activate**
+
 - Check `activationEvents` in package.json
-- Verify no TypeScript errors: `npm run build`
+- Verify no TypeScript errors: `yarn build`
 - Look for errors in Extension Host logs
 
 **Decorations not showing**
+
 - Check file paths are relative
 - Verify workspace root detection
 - Log decoration options before applying
 
 **CodeLens not appearing**
+
 - Verify provider registered for Python files
 - Check `enabled` flag
 - Log `provideCodeLenses` output
@@ -309,7 +358,7 @@ console.log('Found traces:', traces.length);
 ### Create VSIX Package
 
 ```bash
-npm run package
+yarn package
 ```
 
 Creates: `trace-viewer-0.1.0.vsix`
@@ -332,12 +381,14 @@ code --install-extension trace-viewer-0.1.0.vsix
 `.vscodeignore` controls what's included:
 
 **Included**:
+
 - `out/` - Compiled JavaScript
 - `media/` - Icons
 - `README.md`, `CHANGELOG.md`
 - `package.json`
 
 **Excluded**:
+
 - `src/` - TypeScript source
 - `node_modules/` - Dependencies
 - `.vscode/` - Editor config
@@ -350,23 +401,27 @@ code --install-extension trace-viewer-0.1.0.vsix
 ### Publish to Marketplace
 
 1. **Create Publisher Account**
+
    - Go to [Visual Studio Marketplace](https://marketplace.visualstudio.com/)
    - Sign in with Microsoft account
    - Create publisher ID
 
 2. **Get Personal Access Token**
+
    - Azure DevOps settings
    - Personal Access Tokens
    - Create new token with Marketplace scope
 
 3. **Login with vsce**
+
    ```bash
-   npx vsce login <publisher-name>
+   yarn vsce login <publisher-name>
    ```
 
 4. **Publish**
+
    ```bash
-   npx vsce publish
+   yarn vsce publish
    ```
 
 5. **Verify**
@@ -415,9 +470,7 @@ Always handle errors gracefully:
 try {
   await loadTraceFromFile(filePath);
 } catch (error: any) {
-  vscode.window.showErrorMessage(
-    `Failed to load trace: ${error.message}`
-  );
+  vscode.window.showErrorMessage(`Failed to load trace: ${error.message}`);
 }
 ```
 
@@ -468,12 +521,12 @@ try {
 
 ```bash
 # Check for errors
-npm run build
+yarn build
 
 # Common fixes
-rm -rf node_modules out
-npm install
-npm run build
+rm -rf node_modules out yarn.lock
+yarn install
+yarn build
 ```
 
 ### Extension Not Loading
@@ -486,6 +539,7 @@ npm run build
 ### Source Maps Not Working
 
 Ensure `tsconfig.json` has:
+
 ```json
 {
   "compilerOptions": {
@@ -498,9 +552,9 @@ Ensure `tsconfig.json` has:
 
 ```bash
 # Clear cache
-rm -rf node_modules package-lock.json
-npm cache clean --force
-npm install
+rm -rf node_modules yarn.lock
+yarn cache clean
+yarn install
 ```
 
 ---
@@ -515,9 +569,37 @@ npm install
 
 ---
 
+## Documentation Maintenance
+
+### When Adding Features
+
+1. Update `CHANGELOG.md` under `[Unreleased]` section
+2. Update `docs/user-guide.md` if feature is user-facing
+3. Update `docs/development.md` if it affects development workflow
+4. Update `AGENTS.md` if it's an architectural change
+5. Keep `README.md` brief - link to details instead of duplicating
+
+### Before Release
+
+1. Move `[Unreleased]` items to new version section in `CHANGELOG.md`
+2. Verify all documentation reflects new features
+3. Update version in `package.json`
+4. Ensure all cross-references are valid
+
+### Documentation Principles
+
+- **Avoid redundancy** - Each topic covered in one place only
+- **Use cross-references** - Link between docs instead of duplicating content
+- **Target audiences**:
+  - `README.md` - Everyone (quick reference)
+  - `docs/user-guide.md` - End users
+  - `docs/development.md` - Contributors (this file)
+  - `AGENTS.md` - Developers and AI agents (architecture)
+
+---
+
 ## See Also
 
-- [User Guide](user-guide.md) - Using the extension
+- [User Guide](user-guide.md) - For end users: installation, configuration, and usage
 - [AGENTS.md](../AGENTS.md) - Architecture decisions
 - [CHANGELOG.md](../CHANGELOG.md) - Version history
-

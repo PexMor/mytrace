@@ -1,96 +1,83 @@
 # AI Trace Viewer Documentation
 
-Welcome to the AI Trace Viewer documentation. This directory contains comprehensive guides for using and developing the trace viewer.
+This directory contains the comprehensive documentation for the AI Trace Viewer project.
 
-## Documentation Structure
+## User Guides
 
-### Getting Started
+Start here if you're new to AI Trace Viewer:
 
 - [📖 Quick Start Guide](quickstart.md) - Get up and running in 3 steps
 - [⚙️ Configuration Guide](configuration.md) - Server and environment setup
+- [👁️ Trace Viewer Guide](viewer.md) - Web-based trace visualization
+- [🚀 Deployment Guide](deployment.md) - Production deployment options
 
-### User Guides
+## Developer Resources
 
-- [👁️ Trace Viewer](viewer.md) - Web-based trace visualization
-  - Simple viewer (bundled with server)
-  - Advanced viewer (standalone web app)
-  - Lens system for customizing log display
-  - Drag & drop file loading
+For developers working on or integrating with AI Trace Viewer:
 
-- [🚀 Deployment Guide](deployment.md) - GitHub Pages deployment
-  - Building the viewer
-  - Deployment configuration
-  - Custom domains
+- [🛠️ Development Guide](development.md) - Setup, testing, and contributing
+- [📋 Trace Record Format](trace_record_format.md) - JSON format specification
+- [📍 Source Location Tracking](source_location_tracking.md) - IDE integration details
 
-### Developer Reference
+## IDE Integration
 
-- [🛠️ Development Notes](development.md) - Internal implementation details
-  - Development setup
-  - Project structure
-  - Implementation details
-  - Testing
-  - Recent updates
+Resources for VSCode/Cursor plugin integration:
 
-- [🏗️ Architecture & Design](../AGENTS.md) - Technical decisions for developers and AI agents
-  - System architecture
-  - Component details
-  - Design decisions and trade-offs
-  - Extension points
-  - Performance considerations
+- [🔌 VSCode Plugin Format](vscode/plugin_format.md) - Plugin integration guide
+- [📄 Format Example](vscode/format_example.jsonl) - Sample trace file
 
-### Reference
+## Project-Level Documentation
 
-- [📝 Changelog](../CHANGELOG.md) - Version history and changes
+Core project documentation (in root directory):
 
-## GitHub Pages Application
-
-This directory also hosts the built Advanced Viewer application in the `app/` subdirectory:
-
-- **URL:** `https://<username>.github.io/<repository>/app/`
-- **Source:** `aitrace_viewer/` (Preact + TypeScript + Vite)
-- **Build:** `cd aitrace_viewer && yarn build` (outputs to `docs/app/`)
-
-The viewer can:
-- Load sample JSONL files from the dropdown
-- Accept drag-and-drop JSONL/NDJSON files
-- Display trace trees with collapsible spans
-- Show detailed log entries with JSON trees
+- [📘 README.md](../README.md) - Project overview and quick reference
+- [🏗️ AGENTS.md](../AGENTS.md) - Architecture & design decisions (for humans and AI agents)
+- [📝 CHANGELOG.md](../CHANGELOG.md) - Version history and breaking changes
 
 ## Archive
 
-The [archive/](archive/) directory contains historical documentation:
+Historical documentation and feature summaries:
 
-- **buffered_logger_refactoring.md** - BufferedLogger implementation details
-- **target_modes_feature.md** - Target modes development notes
-- **config_system_summary.md** - Configuration system summary
-- **CLEANUP_SUMMARY.md** - Documentation cleanup notes
-- **FEATURE_SUMMARY.md** - Recent feature summaries
+- [archive/](archive/) - Implementation notes, feature summaries, and historical docs
 
-These files are preserved for reference but are not part of the main documentation.
+## Documentation Structure
 
-## Quick Navigation
+```
+docs/
+├── README.md                    # This file
+├── quickstart.md                # Quick start guide
+├── configuration.md             # Configuration reference
+├── viewer.md                    # Web viewer documentation
+├── deployment.md                # Deployment guide
+├── development.md               # Development guide
+├── trace_record_format.md       # Log format spec
+├── source_location_tracking.md  # IDE integration
+├── vscode/                      # VSCode plugin docs
+│   ├── plugin_format.md
+│   └── format_example.jsonl
+├── archive/                     # Historical docs
+│   ├── README.md
+│   ├── implementation_summary.md
+│   └── ...
+├── app/                         # Built viewer app (GitHub Pages)
+└── _site/                       # Jekyll site (generated)
+```
 
-**I want to...**
+## Contributing to Documentation
 
-- **Get started quickly** → [quickstart.md](quickstart.md)
-- **Configure the server** → [configuration.md](configuration.md)
-- **Deploy the viewer** → [deployment.md](deployment.md)
-- **Understand the architecture** → [../AGENTS.md](../AGENTS.md)
-- **Contribute to development** → [development.md](development.md)
-- **See what changed** → [../CHANGELOG.md](../CHANGELOG.md)
-- **Use the web viewer** → [viewer.md](viewer.md)
-- **Load JSONL files** → [viewer.md](viewer.md#usage)
-- **Create custom lenses** → [viewer.md](viewer.md#creating-custom-lenses)
+When updating documentation:
 
-## Need Help?
+1. Keep README.md brief - it should be a quick reference with pointers
+2. AGENTS.md should contain all architectural and technical decisions
+3. CHANGELOG.md should follow [Keep a Changelog](https://keepachangelog.com/) format
+4. User guides in `docs/` should be comprehensive but focused
+5. Update cross-references when moving or renaming files
+6. Add historical docs to `docs/archive/` when superseded
 
-1. Check the relevant guide above
-2. Review [AGENTS.md](../AGENTS.md) for architecture details
-3. Look at example scripts in `test/` directory
-4. Check [CHANGELOG.md](../CHANGELOG.md) for recent changes
-5. Open an issue on GitHub
+## External Links
 
----
-
-**Repository:** https://github.com/yourusername/mytrace  
-**Last Updated:** 2025-10-24
+- [GitHub Repository](https://github.com/yourusername/mytrace)
+- [GitHub Pages Site](https://yourusername.github.io/mytrace/app/)
+- [OpenTelemetry Docs](https://opentelemetry.io/docs/languages/python/)
+- [structlog Docs](https://www.structlog.org/)
+- [FastAPI Docs](https://fastapi.tiangolo.com/)

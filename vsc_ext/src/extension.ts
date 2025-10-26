@@ -9,13 +9,14 @@ type TraceItem = {
   line: number;    // 1-based
   column?: number; // 1-based
   function?: string;
-  severity?: 'info' | 'warning' | 'error' | 'debug';
+  severity?: 'info' | 'warning' | 'warn' | 'error' | 'debug';
   label?: string;  // event name
   payload?: any;   // full log record
   trace_id?: string;
   span_id?: string;
   parent_span_id?: string;
   timestamp?: string;
+  isProvisional?: boolean;  // true for provisional .start events
 };
 
 let traces: TraceItem[] = [];
@@ -211,20 +212,52 @@ export function activate(context: vscode.ExtensionContext) {
     }
     
     // Convert to TraceItem format
-    traces = parsed.map((item: any) => ({
-      id: item.span_id || item.id || String(Math.random()),
-      file: item.file || '',
-      line: item.line || 1,
-      column: item.column,
-      function: item.function,
-      severity: item.level || item.severity || 'info',
-      label: item.event || item.label,
-      payload: item,
-      trace_id: item.trace_id,
-      span_id: item.span_id,
-      parent_span_id: item.parent_span_id,
-      timestamp: item.timestamp || item.ts
-    }));
+    // Support new format with __tracer_meta__ and old format with top-level fields
+    traces = parsed.map((item: any) => {
+      const meta = item.__tracer_meta__ || {};
+      
+      // Filter out provisional .start events if .end exists
+      const event = meta.event || item.event || '';
+      const isProvisional = meta.provisional || item.provisional;
+      
+      return {
+        id: meta.span_id || item.span_id || item.id || String(Math.random()),
+        file: meta.file || item.file || '',
+        line: meta.line || item.line || 1,
+        column: item.column,
+        function: meta.function || item.function,
+        severity: meta.level || item.level || item.severity || 'info',
+        label: event || item.label,
+        payload: item,
+        trace_id: meta.trace_id || item.trace_id,
+        span_id: meta.span_id || item.span_id,
+        parent_span_id: meta.parent_span_id || item.parent_span_id,
+        timestamp: meta.timestamp || item.timestamp || item.ts,
+        isProvisional: isProvisional  // Track if this is a provisional entry
+      };
+    });
+    
+    // Filter out provisional .start entries if corresponding .end exists
+    const spanIds = new Set<string>();
+    const provisionalSpanIds = new Set<string>();
+    
+    // First pass: identify spans with .end events and provisional .start events
+    for (const t of traces) {
+      if (t.label && t.label.endsWith('.end')) {
+        spanIds.add(t.span_id || '');
+      }
+      if (t.label && t.label.endsWith('.start') && t.isProvisional) {
+        provisionalSpanIds.add(t.span_id || '');
+      }
+    }
+    
+    // Second pass: filter out provisional .start entries where .end exists
+    traces = traces.filter(t => {
+      if (t.label && t.label.endsWith('.start') && t.isProvisional) {
+        return !spanIds.has(t.span_id || '');
+      }
+      return true;
+    });
     
     refreshAllEditors();
     lensProvider.refresh();
